@@ -16,6 +16,49 @@ brew install deno
 
 II. ne pas être idiot (WIP en gros on verra si y'a d'autres pré-requis)
 
+# clean-ride (readme du starter)
+
+## Requirements
+
+- Deno
+
+## Tasks
+
+### Deno
+
+#### Dev
+
+```bash
+deno task deno:dev
+```
+
+#### Start
+
+```bash
+deno task deno:start
+```
+
+## Tests
+
+### Run
+
+```bash
+deno test
+```
+
+### Coverage
+
+```bash
+deno test --coverage && deno coverage
+```
+
+## Lint
+
+```bash
+deno lint
+```
+
+
 # Rappel du sujet :
 
 ## Introduction :

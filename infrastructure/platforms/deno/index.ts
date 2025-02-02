@@ -2,7 +2,7 @@ import { AppointmentRepositoryInMemory } from "../../adapters/repositories/Appoi
 import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/MotorcycleRepositoryInMemory.ts";
 import { AppointmentController } from "./controllers/AppointmentController.ts";
 import { MotorcycleController } from "./controllers/MotorcycleController.ts";
-import {AuthentificationController} from "./controllers/AuthentificationController";
+import {AuthentificationController} from "./controllers/AuthentificationController.ts";
 import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory.ts";
 
 const options = {

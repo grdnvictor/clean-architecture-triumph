@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { User } from '../../domain/Entities/User';
+import { UserEntity } from '../../domain/Entities/UserEntity';
 
 export class TokenService {
     private secret: string;
@@ -7,16 +7,16 @@ export class TokenService {
     constructor(secret: string) {
         this.secret = secret;
     }
-    generateAccessToken(user: User): string {
+    generateAccessToken(user: UserEntity): string {
         return jwt.sign(
-            { id: user.id, email: user.email, role: user.role },
+            { id: user.identifier, email: user.email, role: user.isAdmin },
             this.secret,
             { expiresIn: '1h' }
         );
     }
-    generateRefreshToken(user: User): string {
+    generateRefreshToken(user: UserEntity): string {
         return jwt.sign(
-            { id: user.id },
+            { id: user.identifier },
             this.secret,
             { expiresIn: '7d' }
         );

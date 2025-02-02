@@ -1,8 +1,8 @@
-import type {UserRepository} from "../../../../application/repositories/UserRepository";
-import {createAppointmentRequestSchema} from "../schemas/createAppointmentRequestSchema";
-import {authentificationRequestSchema} from "../schemas/AuthentificationRequestSchema";
+import type {UserRepository} from "../../../../application/repositories/UserRepository.ts";
+import {createAppointmentRequestSchema} from "../schemas/createAppointmentRequestSchema.ts";
+import {authentificationRequestSchema} from "../schemas/AuthentificationRequestSchema.ts";
 import { exhaustive } from "npm:exhaustive";
-import {AuthentificationUsecase} from "../../../../application/usecases/AuthentificationUsecase";
+import {AuthentificationUsecase} from "../../../../application/usecases/AuthentificationUsecase.ts";
 
 export class AuthentificationController {
     constructor(private authentificationUsecase: AuthentificationUsecase) {}

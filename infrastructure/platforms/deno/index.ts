@@ -20,7 +20,7 @@ const appointmentController = new AppointmentController(
 );
 
 const authentificationController = new AuthentificationController(
-
+    userRepository
 );
 
 const motorcycleController = new MotorcycleController(motorcycleRepository);
@@ -49,12 +49,9 @@ const handler = (request: Request): Promise<Response> => {
       }
     }
 
-    if(url.pathname === "/authentification") {
+    if(url.pathname === "/auth/signin"){
         if (request.method === "POST") {
             return authentificationController.login(request);
-        }
-        if (request.method === "GET") {
-            return authentificationController.listAppointments();
         }
     }
 

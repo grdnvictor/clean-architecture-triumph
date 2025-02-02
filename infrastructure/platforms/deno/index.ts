@@ -2,6 +2,8 @@ import { AppointmentRepositoryInMemory } from "../../adapters/repositories/Appoi
 import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/MotorcycleRepositoryInMemory.ts";
 import { AppointmentController } from "./controllers/AppointmentController.ts";
 import { MotorcycleController } from "./controllers/MotorcycleController.ts";
+import {AuthentificationController} from "./controllers/AuthentificationController";
+import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory.ts";
 
 const options = {
   port: 8000,
@@ -10,10 +12,15 @@ const options = {
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
 const motorcycleRepository = new MotorcycleRepositoryInMemory([]);
+const userRepository = new UserRepositoryInMemory([]);
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
   motorcycleRepository,
+);
+
+const authentificationController = new AuthentificationController(
+    userRepository
 );
 
 const motorcycleController = new MotorcycleController(motorcycleRepository);
@@ -40,6 +47,12 @@ const handler = (request: Request): Promise<Response> => {
       if (request.method === "POST") {
         return motorcycleController.createMotorcycle(request);
       }
+    }
+
+    if(url.pathname === "/auth/signin"){
+        if (request.method === "POST") {
+            return authentificationController.login(request);
+        }
     }
 
     return Promise.resolve(

@@ -1,28 +1,31 @@
-import type { Brand } from "../types/Brand.ts";
-import type { Model } from "../types/Model.ts";
+// import type { Brand } from "../types/Brand.ts";
+// import type { Model } from "../types/Model.ts";
 
 export class MotorcycleEntity {
   private constructor(
-    public readonly identifier: string,
-    public readonly brand: Brand,
-    public readonly model: Model,
-    public readonly year: number,
-    public readonly createdAt: Date,
-    public readonly updatedAt: Date,
+      public readonly identifier: string,
+      public readonly vin: string,
+      public readonly modelId: string,
+      public readonly concessionId: string,
+      public readonly currentMileage: number,
+      public readonly createdAt: Date,
+      public readonly updatedAt: Date,
   ) {}
 
-  public static create(brand: Brand, model: Model, year: number) {
-    const identifier = crypto.randomUUID();
-    const createdAt = new Date();
-    const updatedAt = new Date();
-
+  public static create(
+      vin: string,
+      modelId: string,
+      concessionId: string,
+      currentMileage: number = 0
+  ) {
     return new MotorcycleEntity(
-      identifier,
-      brand,
-      model,
-      year,
-      createdAt,
-      updatedAt,
+        crypto.randomUUID(),
+        vin,
+        modelId,
+        concessionId,
+        currentMileage,
+        new Date(),
+        new Date()
     );
   }
 }

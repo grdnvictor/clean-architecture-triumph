@@ -1,9 +1,12 @@
-import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory.ts";
-import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/MotorcycleRepositoryInMemory.ts";
-import { AppointmentController } from "./controllers/AppointmentController.ts";
-import { MotorcycleController } from "./controllers/MotorcycleController.ts";
+import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
+import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/MotorcycleRepositoryInMemory";
+import { AppointmentController } from "./controllers/AppointmentController";
+import { MotorcycleController } from "./controllers/MotorcycleController";
 import {AuthentificationController} from "./controllers/AuthentificationController";
-import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory.ts";
+import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory";
+import {AuthentificationUsecase} from "../../../application/usecases/AuthentificationUsecase";
+import {TokenService} from "../../Services/TokenService";
+import {PasswordService} from "../../Services/PasswordService";
 
 const options = {
   port: 8000,

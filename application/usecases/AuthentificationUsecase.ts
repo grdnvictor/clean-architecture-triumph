@@ -9,7 +9,6 @@ export class AuthentificationUsecase {
         private readonly tokenService: TokenService
     ) {}
     public async execute(email:string, password: string) {
-        console.log("test")
         const user = await this.userRepository.findOneByEmail(
             email,
         );

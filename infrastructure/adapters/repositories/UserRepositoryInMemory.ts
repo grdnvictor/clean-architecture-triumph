@@ -1,6 +1,6 @@
-import type { MotorcycleRepository } from "../../../application/repositories/MotorcycleRepository.ts";
-import type { MotorcycleEntity } from "../../../domain/entities/MotorcycleEntity.ts";
-import {UserRepository} from "../../../application/repositories/UserRepository";
+import {Client} from "../connection";
+import  {UserRepository} from "../../../application/repositories/UserRepository";
+import {UserEntity} from "../../../domain/entities/UserEntity";
 
 export class UserRepositoryInMemory implements UserRepository {
     public constructor(public readonly users: UserEntity[]) {}
@@ -14,12 +14,7 @@ export class UserRepositoryInMemory implements UserRepository {
     public all(): Promise<UserEntity[]> {
         return Promise.resolve(this.users);
     }
-
-    public findOneBy(search:string,search: string): Promise<UserEntity | null> {
-        const foundUser = this.users.find((user) => {
-            return user.search === value;
-        });
-
-        return Promise.resolve(foundUser ?? null);
+    public findOneByEmail(email: string): Promise<UserEntity | null> {
     }
+
 }

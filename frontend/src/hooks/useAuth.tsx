@@ -17,7 +17,7 @@ interface AuthContextType {
 
 // API endpoints configuration
 const API_ROUTES = {
-    SIGN_IN: '/auth/signin',
+    SIGN_IN: 'http://localhost:8000/auth/signin',
     SIGN_UP: '/auth/signup',
     SIGN_OUT: '/auth/signout'
 } as const;

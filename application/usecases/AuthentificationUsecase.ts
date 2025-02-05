@@ -9,15 +9,15 @@ export class AuthentificationUsecase {
         private readonly tokenService: TokenService
     ) {}
     public async execute(email:string, password: string) {
+        console.log("test")
         const user = await this.userRepository.findOneByEmail(
             email,
         );
-
         if (!user) {
             return new UserNotFoundError();
         }
 
-        const passwordValidOrError = await this.PasswordService.compare(password, user.passwordHash);
+        const passwordValidOrError = await this.PasswordService.compare(password, user.password);
         if (passwordValidOrError instanceof Error) {
             return passwordValidOrError;
         }

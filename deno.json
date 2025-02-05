@@ -11,5 +11,8 @@
   },
   "fmt": {
     "lineWidth": 10000
-  }
+  },
+  "unstable": [
+    "sloppy-imports"
+  ]
 }

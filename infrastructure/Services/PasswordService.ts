@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from "https://deno.land/x/bcrypt/mod.ts";
 import {PasswordValidOrError} from "../../domain/errors/PasswordValidOrError";
 
 export class PasswordService {
@@ -8,10 +8,10 @@ export class PasswordService {
     }
 
   async compare(plainPassword: string, hashedPassword: string): Promise<boolean | PasswordValidOrError> {
-    if (await bcrypt.compare(plainPassword, hashedPassword)) {
-        return true;
-    } else {
-        return new PasswordValidOrError();
-    }
+        if ( await bcrypt.compare(plainPassword, hashedPassword)) {
+            return true;
+        } else {
+            return new PasswordValidOrError();
+        }
 }
 }

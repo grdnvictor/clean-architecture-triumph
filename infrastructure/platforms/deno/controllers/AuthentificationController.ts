@@ -1,8 +1,8 @@
-import type {UserRepository} from "../../../../application/repositories/UserRepository.ts";
-import {createAppointmentRequestSchema} from "../schemas/createAppointmentRequestSchema.ts";
-import {authentificationRequestSchema} from "../schemas/AuthentificationRequestSchema.ts";
+import type {UserRepository} from "../../../../application/repositories/UserRepository";
+import {createAppointmentRequestSchema} from "../schemas/createAppointmentRequestSchema";
+import {authentificationRequestSchema} from "../schemas/AuthentificationRequestSchema";
 import { exhaustive } from "npm:exhaustive";
-import {AuthentificationUsecase} from "../../../../application/usecases/AuthentificationUsecase.ts";
+import {AuthentificationUsecase} from "../../../../application/usecases/AuthentificationUsecase";
 
 export class AuthentificationController {
     constructor(private authentificationUsecase: AuthentificationUsecase) {}
@@ -16,15 +16,12 @@ export class AuthentificationController {
             });
         }
         const {email, password} = validation.data;
-        console.log("email", email);
         const result = await this.authentificationUsecase.execute(email,password);
-        console.log("result", result);
         if ("accessToken" in result && "refreshToken" in result) {
             return new Response(JSON.stringify(result), {
                 status: 201,
             });
         }
-
 
         return exhaustive(result.name, {
             UserNotFoundError: () => new Response("UserNotFoundError", {status: 400}),

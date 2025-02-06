@@ -1,4 +1,4 @@
--- USERS TABLE
+-- USERS TABLE # password is 'hashedpassword123'
 CREATE TABLE users (
                        id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                        email VARCHAR(255) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (email, password, isAdmin, createdAt, updatedAt) VALUES
-                                                                       ('admin@example.com', 'hashedpassword123', TRUE, NOW(), NOW()),
+                                                                       ('admin@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', TRUE, NOW(), NOW()),
                                                                        ('user1@example.com', 'hashedpassword456', FALSE, NOW(), NOW()),
                                                                        ('user2@example.com', 'hashedpassword789', FALSE, NOW(), NOW());
 

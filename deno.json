@@ -3,8 +3,8 @@
     "./infrastructure/platforms/deno"
   ],
   "tasks": {
-    "deno:dev": "deno run --watch --allow-net --unstable-sloppy-imports infrastructure/platforms/deno/index.ts",
-    "deno:start": "deno run --allow-net infrastructure/platforms/deno/index.ts"
+    "deno:dev": "deno run --watch --allow-net --unstable-sloppy-imports --allow-env --env-file=.env infrastructure/platforms/deno/index.ts",
+    "deno:start": "deno run --allow-net --allow-env infrastructure/platforms/deno/index.ts"
   },
   "compilerOptions": {
     "strict": true

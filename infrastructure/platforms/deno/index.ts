@@ -5,8 +5,9 @@ import { MotorcycleController } from "./controllers/MotorcycleController";
 import {AuthentificationController} from "./controllers/AuthentificationController";
 import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory";
 import {AuthentificationUsecase} from "../../../application/usecases/AuthentificationUsecase";
-import {TokenService} from "../../Services/TokenService";
-import {PasswordService} from "../../Services/PasswordService";
+import {TokenService} from "../../services/TokenService";
+import {PasswordService} from "../../services/PasswordService";
+import * as process from "node:process";
 
 const options = {
   port: 8000,
@@ -15,9 +16,9 @@ const options = {
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
 const motorcycleRepository = new MotorcycleRepositoryInMemory([]);
-const userRepository = new UserRepositoryInMemory([]);
+const userRepository = new UserRepositoryInMemory();
 const passwordService = new PasswordService();
-const tokenService = new TokenService();
+const tokenService = new TokenService(process.env.JWT_SECRET);
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
@@ -39,20 +40,20 @@ const motorcycleController = new MotorcycleController(motorcycleRepository);
 const handler = async (request: Request): Promise<Response> => {
   try {
     const url = new URL(request.url);
-
-    // Gérer les requêtes préflight OPTIONS
+    const options = {
+        headers: {
+            "Access-Control-Allow-Origin": Deno.env.get("FRONTEND_URL"),
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Credentials": "true",
+        },
+    }
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
-        headers: new Headers({
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-          "Access-Control-Allow-Credentials": "true",
-        }),
+        headers: new Headers(options.headers),
       });
     }
-
     let response: Response;
 
     if (url.pathname === "/appointments") {
@@ -74,7 +75,6 @@ const handler = async (request: Request): Promise<Response> => {
     } else if (url.pathname === "/auth/signin") {
       if (request.method === "POST") {
         response = await authentificationController.login(request);
-        console.log("response", response);
       } else {
         response = new Response("Method not allowed", { status: 405 });
       }
@@ -82,23 +82,15 @@ const handler = async (request: Request): Promise<Response> => {
       response = new Response("Not found", { status: 404 });
     }
 
-    // Cloner la réponse et ajouter les headers CORS avant de la renvoyer
-    const corsHeaders = new Headers(response.headers);
-    corsHeaders.set("Access-Control-Allow-Origin", "http://localhost:3000");
-    corsHeaders.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    corsHeaders.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    corsHeaders.set("Access-Control-Allow-Credentials", "true");
-
     return new Response(response.body, {
       status: response.status,
-      headers: corsHeaders,
+      headers:  new Headers(options.headers),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return new Response(message, { status: 500 });
+    return new Response(message, { status: 500, headers: { "Access-Control-Allow-Origin": process.env.FRONTEND_URL } });
   }
 };
-
 Deno.serve(options, handler);
 
 console.log(`Server running on http://${options.host}:${options.port}`);

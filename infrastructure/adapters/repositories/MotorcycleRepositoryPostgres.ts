@@ -11,15 +11,20 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
   }
 
   public async save(motorcycle: MotorcycleEntity): Promise<void> {
+
+    // return new reponse of motorcycleEntity
+
     await this.client.queryArray(
-        "INSERT INTO motorcycle (id, vin, modelId, concessionId, currentMileage, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-        motorcycle.identifier,
-        motorcycle.vin,
-        motorcycle.modelId,
-        motorcycle.concessionId,
-        motorcycle.currentMileage,
-        motorcycle.createdAt,
-        motorcycle.updatedAt
+        "INSERT INTO motorcycle (id, vin, modelId, concessionId, currentMileage, createdAt, updatedAt) VALUES ($IDENTIFIER, $VIN, $MODELID, $CONCESSIONID, $CURRENTMILEAGE, $CREATED_AT, $UPDATED_AT)",
+        {
+            IDENTIFIER: motorcycle.identifier,
+            VIN: motorcycle.vin,
+            MODELID: motorcycle.modelId,
+            CONCESSIONID: motorcycle.concessionId,
+            CURRENTMILEAGE: motorcycle.currentMileage,
+            CREATED_AT: new Date(),
+            UPDATED_AT: new Date()
+        }
     );
   }
 

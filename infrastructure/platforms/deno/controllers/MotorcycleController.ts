@@ -32,8 +32,9 @@ export class MotorcycleController {
 
     if (!validation.success) return new Response("Malformed request", { status: 400 });
 
-    const { brand, model, year } = validation.data;
-    const motorcycle = MotorcycleEntity.create(brand, model, year);
+    const { vin, modelId, concessionId, currentMileage } = validation.data;
+    const motorcycle = MotorcycleEntity.create(vin, modelId, concessionId, currentMileage);
+
     await this.repository.save(motorcycle);
 
     return new Response(null, { status: 201 });

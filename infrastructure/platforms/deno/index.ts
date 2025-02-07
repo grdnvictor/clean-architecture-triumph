@@ -1,5 +1,5 @@
 import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
-import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/MotorcycleRepositoryInMemory";
+import { MotorcycleRepositoryPostgres } from "../../adapters/repositories/MotorcycleRepositoryPostgres";
 import { AppointmentController } from "./controllers/AppointmentController";
 import { MotorcycleController } from "./controllers/MotorcycleController";
 import {AuthentificationController} from "./controllers/AuthentificationController";
@@ -15,7 +15,7 @@ const options = {
 };
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
-const motorcycleRepository = new MotorcycleRepositoryInMemory([]);
+const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 const userRepository = new UserRepositoryInMemory();
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);

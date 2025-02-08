@@ -3,7 +3,8 @@ export class IntervalEntity {
         public readonly identifier: string,
         public readonly motorcycleId: string,
         public readonly maintenanceId: string,
-        public readonly mileage: number,
+        public readonly distanceInterval: number,
+        public readonly timeInterval: number,
         public readonly createdAt: Date,
         public readonly updatedAt: Date,
     ) {}
@@ -11,13 +12,15 @@ export class IntervalEntity {
     public static create(
         motorcycleId: string,
         maintenanceId: string,
-        mileage: number
+        distanceInterval: number,
+        timeInterval: number
     ) {
         return new IntervalEntity(
             crypto.randomUUID(),
             motorcycleId,
             maintenanceId,
-            mileage,
+            distanceInterval,
+            timeInterval,
             new Date(),
             new Date()
         );

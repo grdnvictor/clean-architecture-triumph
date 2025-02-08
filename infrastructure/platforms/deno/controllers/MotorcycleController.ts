@@ -1,15 +1,29 @@
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository.ts";
-import { ListMotorcyclesUsecase } from "../../../../application/usecases/ListMotorcyclesUsecase.ts";
-import { CreateMotorcycleUsecase } from "../../../../application/usecases/CreateMotorcycleUsecase.ts";
+import type { BrandRepository } from "../../../../application/repositories/BrandRepository";
 import { exhaustive } from "npm:exhaustive";
 import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema.ts";
+import {ListMotorcyclesBrandUsecase} from "../../../../application/usecases/ListMotorcycleBrandUsecase";
+import {ListMotorcycleModelsUsecase} from "../../../../application/usecases/ListMotorcycleModelsUsecase";
 
 export class MotorcycleController {
-  public constructor(private readonly motorcycleRepository: MotorcycleRepository) {}
+  public constructor(
+      private readonly motorcycleRepository: MotorcycleRepository,
+      private readonly brandRepository: BrandRepository
+  ) {}
 
-  public async listMotorcycles(_: Request): Promise<Response> {
-    const listMotorcyclesUsecase = new ListMotorcyclesUsecase(this.motorcycleRepository);
-    const motorcycles = await listMotorcyclesUsecase.execute();
+public async listMotorcyclesBrand(_: Request): Promise<Response> {
+    const listMotorcyclesBrandUsecase = new ListMotorcyclesBrandUsecase(this.brandRepository) ;
+    const brand = await listMotorcyclesBrandUsecase.execute();
+    console.log("BRAND", brand);
+    return new Response(JSON.stringify(brand), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+}
+  public async listMotorcycleModels(_: Request, brandId:string): Promise<Response> {
+    const listMotorcyclesUsecase = new ListMotorcycleModelsUsecase(this.motorcycleRepository);
+    const motorcycles = await listMotorcyclesUsecase.execute(brandId);
 
     return new Response(JSON.stringify(motorcycles), {
       headers: {

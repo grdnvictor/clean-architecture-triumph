@@ -8,6 +8,8 @@ import {AuthentificationUsecase} from "../../../application/usecases/Authentific
 import {TokenService} from "../../services/TokenService";
 import {PasswordService} from "../../services/PasswordService";
 import * as process from "node:process";
+import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
+import {ClientController} from "./controllers/ClientController.ts";
 
 const options = {
   port: 8000,
@@ -16,6 +18,10 @@ const options = {
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
+
+const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const clientController = new ClientController(clientRepositoryPostgres);
+
 const userRepository = new UserRepositoryInMemory();
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
@@ -48,6 +54,7 @@ const handler = async (request: Request): Promise<Response> => {
             "Access-Control-Allow-Credentials": "true",
         },
     }
+
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -55,6 +62,7 @@ const handler = async (request: Request): Promise<Response> => {
       });
     }
     let response: Response;
+
 
     if (url.pathname === "/appointments") {
       if (request.method === "GET") {
@@ -64,7 +72,9 @@ const handler = async (request: Request): Promise<Response> => {
       } else {
         response = new Response("Method not allowed", { status: 405 });
       }
-    } else if (url.pathname === "/motorcycles") {
+    }
+
+    if (url.pathname === "/motorcycles") {
       if (request.method === "GET") {
         response = await motorcycleController.listMotorcycles(request);
       } else if (request.method === "POST") {
@@ -72,14 +82,24 @@ const handler = async (request: Request): Promise<Response> => {
       } else {
         response = new Response("Method not allowed", { status: 405 });
       }
-    } else if (url.pathname === "/auth/signin") {
+    }
+
+    if (url.pathname === "/clients") {
+      if(request.method === "GET") {
+        response = await clientController.listClients(request);
+      }
+    }
+
+    if (url.pathname === "/auth/signin") {
       if (request.method === "POST") {
         response = await authentificationController.login(request);
       } else {
         response = new Response("Method not allowed", { status: 405 });
       }
-    } else {
-      response = new Response("Not found", { status: 404 });
+    }
+
+    if (!response) {
+        response = new Response("Not found", { status: 404 });
     }
 
     return new Response(response.body, {

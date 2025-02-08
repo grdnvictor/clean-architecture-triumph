@@ -1,11 +1,10 @@
-import { Status } from "../types/Status.ts";
-
 export class UserEntity {
     private constructor(
         public readonly identifier: string,
         public readonly email: string,
         public readonly password: string,
         public readonly isAdmin: boolean,
+        public readonly concessionId: string,
         public readonly createdAt: Date,
         public readonly updatedAt: Date,
     ) {}

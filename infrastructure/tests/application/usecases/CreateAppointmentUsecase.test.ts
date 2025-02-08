@@ -1,7 +1,7 @@
 import { expect } from "jsr:@std/expect";
 import { CreateAppointmentUsecase } from "../../../../application/usecases/CreateAppointmentUsecase.ts";
 import { AppointmentRepositoryInMemory } from "../../../adapters/repositories/AppointmentRepositoryInMemory.ts";
-import { MotorcycleRepositoryInMemory } from "../../../adapters/repositories/MotorcycleRepositoryInMemory.ts";
+import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres.ts";
 import { MotorcycleEntity } from "../../../../domain/entities/MotorcycleEntity.ts";
 import { Brand } from "../../../../domain/types/Brand.ts";
 import { Model } from "../../../../domain/types/Model.ts";
@@ -20,7 +20,7 @@ if (model instanceof Error) {
 
 const motorcycle = MotorcycleEntity.create(brand, model, 2024);
 
-const motorcycleRepository = new MotorcycleRepositoryInMemory([
+const motorcycleRepository = new MotorcycleRepositoryPostgres([
   motorcycle,
 ]);
 

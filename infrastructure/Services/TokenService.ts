@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { UserEntity } from '../../domain/Entities/UserEntity';
-
+import { UserEntity } from '../../domain/entities/UserEntity';
 export class TokenService {
     private secret: string;
 

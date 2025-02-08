@@ -1,6 +1,3 @@
-// import type { Brand } from "../types/Brand.ts";
-// import type { Model } from "../types/Model.ts";
-
 export class MotorcycleEntity {
   private constructor(
       public readonly identifier: string,

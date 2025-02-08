@@ -44,6 +44,7 @@ export default function Home() {
                 });
                 setErrors(formattedErrors);
             } else {
+                console.log(error);
                 setErrors({ submit: 'Failed to sign in. Please try again.' });
             }
         } finally {
@@ -53,7 +54,6 @@ export default function Home() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        console.log(name, value);
         setFormData((prev) => ({ ...prev, [name]: value }));
         if (errors[name as keyof typeof errors]) {
             setErrors((prev) => ({ ...prev, [name]: undefined }));

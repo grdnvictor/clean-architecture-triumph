@@ -1,9 +1,15 @@
-import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory.ts";
-import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/MotorcycleRepositoryInMemory.ts";
-import { AppointmentController } from "./controllers/AppointmentController.ts";
-import { MotorcycleController } from "./controllers/MotorcycleController.ts";
-import {AuthentificationController} from "./controllers/AuthentificationController.ts";
-import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory.ts";
+import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
+import { MotorcycleRepositoryPostgres } from "../../adapters/repositories/MotorcycleRepositoryPostgres";
+import { AppointmentController } from "./controllers/AppointmentController";
+import { MotorcycleController } from "./controllers/MotorcycleController";
+import {AuthentificationController} from "./controllers/AuthentificationController";
+import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory";
+import {AuthentificationUsecase} from "../../../application/usecases/AuthentificationUsecase";
+import {TokenService} from "../../services/TokenService";
+import {PasswordService} from "../../services/PasswordService";
+import * as process from "node:process";
+import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
+import {ClientController} from "./controllers/ClientController.ts";
 
 const options = {
   port: 8000,
@@ -11,64 +17,115 @@ const options = {
 };
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
-const motorcycleRepository = new MotorcycleRepositoryInMemory([]);
-const userRepository = new UserRepositoryInMemory([]);
+const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
+
+const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const clientController = new ClientController(clientRepositoryPostgres);
+
+const userRepository = new UserRepositoryInMemory();
+const passwordService = new PasswordService();
+const tokenService = new TokenService(process.env.JWT_SECRET);
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
   motorcycleRepository,
 );
 
+const authentificationUsecase = new AuthentificationUsecase(
+  userRepository,
+  passwordService,
+  tokenService
+);
+
 const authentificationController = new AuthentificationController(
-    userRepository
+  authentificationUsecase
 );
 
 const motorcycleController = new MotorcycleController(motorcycleRepository);
 
-const handler = (request: Request): Promise<Response> => {
+const handler = async (request: Request): Promise<Response> => {
   try {
     const url = new URL(request.url);
+    const options = {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Credentials": "true",
+        },
+    }
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: new Headers(options.headers),
+      });
+    }
+    let response: Response;
+
 
     if (url.pathname === "/appointments") {
       if (request.method === "GET") {
-        return appointmentController.listAppointments();
-      }
-
-      if (request.method === "POST") {
-        return appointmentController.createAppointment(request);
+        response = await appointmentController.listAppointments();
+      } else if (request.method === "POST") {
+        response = await appointmentController.createAppointment(request);
+      } else {
+        response = new Response("Method not allowed", { status: 405 });
       }
     }
 
     if (url.pathname === "/motorcycles") {
       if (request.method === "GET") {
-        return motorcycleController.listMotorcycles(request);
+        response = await motorcycleController.listMotorcycles(request);
+      } else if (request.method === "POST") {
+        response = await motorcycleController.createMotorcycle(request);
+      } else {
+        response = new Response("Method not allowed", { status: 405 });
+      }
+    }
+
+    if (url.pathname.startsWith("/clients")) {
+      const hasParameter = url.pathname.split("/").length > 2;
+      if (request.method === "GET") {
+        response = hasParameter
+            ? await clientController.getClientById(request)
+            : await clientController.listClients(request);
       }
 
       if (request.method === "POST") {
-        return motorcycleController.createMotorcycle(request);
+        response = await clientController.createClient(request);
+      }
+
+      if (request.method === "PUT") {
+        response = await clientController.updateClient(request);
+      }
+
+      if (request.method === "DELETE") {
+        response = await clientController.deleteClient(request);
       }
     }
 
-    if(url.pathname === "/auth/signin"){
-        if (request.method === "POST") {
-            return authentificationController.login(request);
-        }
+    if (url.pathname === "/auth/signin") {
+      if (request.method === "POST") {
+        response = await authentificationController.login(request);
+      } else {
+        response = new Response("Method not allowed", { status: 405 });
+      }
     }
 
-    return Promise.resolve(
-      new Response("Not found", {
-        status: 404,
-      }),
-    );
+    if (!response) {
+        response = new Response("Not found", { status: 404 });
+    }
+
+    return new Response(response.body, {
+      status: response.status,
+      headers:  new Headers(options.headers),
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-
-    return Promise.resolve(
-      new Response(message, {
-        status: 500,
-      }),
-    );
+    return new Response(message, { status: 500, headers: { "Access-Control-Allow-Origin": process.env.FRONTEND_URL } });
   }
 };
-
 Deno.serve(options, handler);
+
+console.log(`Server running on http://${options.host}:${options.port}`);

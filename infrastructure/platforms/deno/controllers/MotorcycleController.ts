@@ -1,46 +1,61 @@
-import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository.ts";
-import { ListMotorcyclesUsecase } from "../../../../application/usecases/ListMotorcyclesUsecase.ts";
-import { CreateMotorcycleUsecase } from "../../../../application/usecases/CreateMotorcycleUsecase.ts";
-import { exhaustive } from "npm:exhaustive";
-import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema.ts";
+import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository";
+import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres";
+import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema";
+import {MotorcycleEntity} from "../../../../domain/entities/MotorcycleEntity";
 
 export class MotorcycleController {
-  public constructor(private readonly motorcycleRepository: MotorcycleRepository) {}
+  private repository: MotorcycleRepository;
+
+  constructor() {
+    this.repository = new MotorcycleRepositoryPostgres();
+  }
 
   public async listMotorcycles(_: Request): Promise<Response> {
-    const listMotorcyclesUsecase = new ListMotorcyclesUsecase(this.motorcycleRepository);
-    const motorcycles = await listMotorcyclesUsecase.execute();
+    const motorcycles = await this.repository.all();
+    return new Response(JSON.stringify(motorcycles), { headers: { "Content-Type": "application/json" } });
+  }
 
-    return new Response(JSON.stringify(motorcycles), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  public async getMotorcycleById(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").pop();
+    if (!id) return new Response("Missing ID", { status: 400 });
+
+    const motorcycle = await this.repository.findOneById(id);
+    if (!motorcycle) return new Response("Motorcycle not found", { status: 404 });
+
+    return new Response(JSON.stringify(motorcycle), { headers: { "Content-Type": "application/json" } });
   }
 
   public async createMotorcycle(request: Request): Promise<Response> {
-    const createMotorcycleUsecase = new CreateMotorcycleUsecase(this.motorcycleRepository);
     const body = await request.json();
     const validation = createMotorcycleRequestSchema.safeParse(body);
 
-    if (!validation.success) {
-      return new Response("Malformed request", {
-        status: 400,
-      });
-    }
+    if (!validation.success) return new Response("Malformed request", { status: 400 });
 
-    const { brand, model, year } = validation.data;
-    const error = await createMotorcycleUsecase.execute(brand, model, year);
+    const { vin, modelId, concessionId, currentMileage } = validation.data;
+    const motorcycle = MotorcycleEntity.create(vin, modelId, concessionId, currentMileage);
 
-    if (!error) {
-      return new Response(null, {
-        status: 201,
-      });
-    }
+    await this.repository.save(motorcycle);
 
-    return exhaustive(error.name, {
-      BrandLengthTooShortError: () => new Response("BrandLengthTooShortError", { status: 400 }),
-      ModelLengthTooShortError: () => new Response("ModelLengthTooShortError", { status: 400 }),
-    });
+    return new Response(null, { status: 201 });
+  }
+
+  public async updateMotorcycle(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").pop();
+    if (!id) return new Response("Missing ID", { status: 400 });
+
+    const body = await request.json();
+    await this.repository.update(id, body);
+    return new Response("Updated successfully", { status: 200 });
+  }
+
+  public async deleteMotorcycle(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    const id = url.pathname.split("/").pop();
+    if (!id) return new Response("Missing ID", { status: 400 });
+
+    await this.repository.delete(id);
+    return new Response("Deleted successfully", { status: 200 });
   }
 }

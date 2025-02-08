@@ -39,17 +39,13 @@ export default function ModelManagement() {
     const currentYear = new Date().getFullYear();
 
     useEffect(() => {
-        fetchMotorcycleBrands();
-        fetchModels();
+        (async () => {
+            await fetchMotorcycleBrands();
+            await fetchModels();
+        })();
     }, []);
 
-    useEffect(() => {
-        if (selectedDisplayBrand) {
-            setFilteredModels(models.filter(model => model.brandId === selectedDisplayBrand));
-        } else {
-            setFilteredModels(models);
-        }
-    }, [selectedDisplayBrand, models]);
+
 
     const fetchMotorcycleBrands = async() => {
         setIsLoading(true);

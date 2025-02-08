@@ -1,4 +1,4 @@
-import type {ModelRepository} from "../repositories/ModelRepository";
+import type {ModelRepository} from "../repositories/ModelRepository.ts";
 
 export class ListMotorcycleModelUsecase{
     public constructor(

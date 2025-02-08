@@ -17,7 +17,7 @@ export class MotorcycleModelController {
             },
         });
     }
-    public async listMotorcyclesModels(request: Request): Promise<Response> {
+    public async listMotorcyclesModels(_: Request): Promise<Response> {
         const listMotorcyclesUsecase = new ListMotorcycleModelUsecase(this.modelRepository);
         const models = await listMotorcyclesUsecase.execute();
         return new Response(JSON.stringify(models), {

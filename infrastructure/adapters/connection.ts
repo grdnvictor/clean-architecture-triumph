@@ -6,7 +6,7 @@ export class DatabaseConnection {
 
     private constructor() {
         const databaseUrl = Deno.env.get("DATABASE_URL");
-
+        console.log("databaseUrl", databaseUrl);
         if (!databaseUrl) {
             throw new Error("DATABASE_URL environment variable is not set");
         }

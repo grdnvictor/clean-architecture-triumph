@@ -1,7 +1,6 @@
-import type {ModelEntity} from "../../domain/entities/ModelEntity";
+import type {ModelEntity} from "../../domain/entities/ModelEntity.ts";
 
 export interface ModelRepository {
-    save(motorcycle: ModelEntity): Promise<void>;
+   // save(motorcycle: ModelEntity): Promise<void>;
     all(): Promise<ModelEntity[]>;
-    findByOption(options: { where?: Record<string, any>; select?: string[]; orderBy?: string; limit?: number; offset?: number; }): Promise<ModelEntity[]>;
 }

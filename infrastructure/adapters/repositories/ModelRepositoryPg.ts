@@ -1,15 +1,15 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import {DatabaseConnection} from "../connection";
-import {UserRepository} from "../../../application/repositories/UserRepository";
-import {UserEntity} from "../../../domain/entities/UserEntity";
+import {ModelRepository} from "../../../application/repositories/ModelRepository";
+import {ModelEntity} from "../../../domain/entities/ModelEntity";
 
-export class UserRepositoryPg implements UserRepository {
+export class ModelRepositoryPg implements ModelRepository {
     private client: Client;
     private tableName: string;
 
     constructor() {
         this.client = DatabaseConnection.getInstance().getClient();
-        this.tableName = "users";
+        this.tableName = "model";
     }
 
     public async findByOption(options: {
@@ -18,7 +18,7 @@ export class UserRepositoryPg implements UserRepository {
         orderBy?: string,
         limit?: number,
         offset?: number,
-    } = {}):Promise<UserEntity[] | null>  {
+    } = {}):Promise<ModelEntity[] | null>  {
         const {
             where = {},
             select = ['*'],
@@ -27,7 +27,6 @@ export class UserRepositoryPg implements UserRepository {
             offset = 0,
         } = options;
         try{
-           // await this.dbConnection.connect();
             const whereConditions = Object.entries(where).map(([key, value]) => {
                 if (value === null) return `${key} IS NULL`;
                 if (Array.isArray(value)) return `${key} IN (${value.map(v => `'${v}'`).join(',')})`;
@@ -42,18 +41,28 @@ export class UserRepositoryPg implements UserRepository {
                 OFFSET ${offset}
             `;
 
-            const result = await this.client.queryObject<UserEntity>(query);
+            const result = await this.client.queryObject<ModelEntity>(query);
             const row = result.rows[0];
-            return row ? UserEntity.create(row.email, row.password, row.isAdmin) : null;
+            return row ? ModelEntity.create(row.name,row.year,row.brand_id,row.specifications,row.maintenanceIntervalKm,row.maintenanceIntervalMonths) : null;
         } catch (error) {
             console.error(`Error in selectBy for ${this.tableName}:`, error);
             return null;
         }
     }
-    public all(): Promise<UserEntity[]> {
-        return Promise.resolve(this.users);
+    public async all(): Promise<ModelEntity[]> {
+        try{
+            const query = `
+                SELECT *
+                FROM ${this.tableName}
+            `;
+            const result = await this.client.queryObject<ModelEntity>(query);
+            return result.rows;
+        }catch (error) {
+            console.error(`Error in selectBy for ${this.tableName}:`, error);
+            return [];
+        }
     }
-    public async save(user: UserEntity) {
+    public async save(model: ModelEntity) {
         return Promise.resolve();
     }
 

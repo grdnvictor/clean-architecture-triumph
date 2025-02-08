@@ -1,26 +1,25 @@
+import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import {DatabaseConnection} from "../connection";
 import {BrandRepository} from "../../../application/repositories/BrandRepository";
 import {BrandEntity} from "../../../domain/entities/BrandEntity";
 import {UserEntity} from "../../../domain/entities/UserEntity";
 
 export class BrandRepositoryPg implements BrandRepository {
-    private dbConnection: DatabaseConnection;
+    private client: Client;
     private tableName: string;
 
     constructor() {
-        this.dbConnection = DatabaseConnection.getInstance();
+        this.client = DatabaseConnection.getInstance().getClient();
         this.tableName = "brand";
     }
 
     async all(): Promise<BrandEntity[]> {
         try {
-            const client = this.dbConnection.getClient();
             const query = `
                 SELECT *
                 FROM ${this.tableName}
             `;
-
-            const result = await client.queryObject<BrandEntity>(query);
+            const result = await this.client.queryObject<BrandEntity>(query);
             console.log(result);
             return result.rows;
         } catch (error) {
@@ -30,13 +29,12 @@ export class BrandRepositoryPg implements BrandRepository {
     }
     async save(brand: any): Promise<void> {
         try {
-            const client = this.dbConnection.getClient();
             const query = `
                 INSERT INTO ${this.tableName} (name, description)
                 VALUES ('${brand.name}', '${brand.description}')
             `;
 
-            await client.queryObject<any>(query);
+            await this.client.queryObject<any>(query);
         } catch (error) {
             console.error(`Error in insert for ${this.tableName}:`, error);
         }
@@ -58,7 +56,6 @@ export class BrandRepositoryPg implements BrandRepository {
         } = options;
         try{
             // await this.dbConnection.connect();
-            const client = this.dbConnection.getClient();
             const whereConditions = Object.entries(where).map(([key, value]) => {
                 if (value === null) return `${key} IS NULL`;
                 if (Array.isArray(value)) return `${key} IN (${value.map(v => `'${v}'`).join(',')})`;
@@ -73,7 +70,7 @@ export class BrandRepositoryPg implements BrandRepository {
                 OFFSET ${offset}
             `;
 
-            const result = await client.queryObject<BrandEntity>(query);
+            const result = await this.client.queryObject<BrandEntity>(query);
             const row = result.rows[0];
             return row ? UserEntity.create(row.email, row.password, row.isAdmin) : null;
         } catch (error) {

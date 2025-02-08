@@ -9,6 +9,9 @@ import {TokenService} from "../../services/TokenService";
 import {PasswordService} from "../../services/PasswordService";
 import * as process from "node:process";
 import {BrandRepositoryPg} from "../../adapters/repositories/BrandRepositoryPg";
+import {ModelRepositoryPg} from "../../adapters/repositories/ModelRepositoryPg";
+import {MotorcycleBrandController} from "./controllers/MotorcycleBrandController";
+import {MotorcycleModelController} from "./controllers/MotorcycleModelController";
 
 const options = {
   port: 8000,
@@ -21,6 +24,7 @@ const userRepository = new UserRepositoryPg();
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
 const brandRepository = new BrandRepositoryPg();
+const modelRepository = new ModelRepositoryPg();
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
@@ -33,11 +37,19 @@ const authentificationUsecase = new AuthentificationUsecase(
   tokenService
 );
 
-const authentificationController = new AuthentificationController(
-  authentificationUsecase
-);
+const authentificationController = new AuthentificationController(authentificationUsecase);
 
-const motorcycleController = new MotorcycleController(motorcycleRepository,brandRepository);
+const motorcycleController = new MotorcycleController(
+    motorcycleRepository,
+    brandRepository,
+    modelRepository
+);
+/*const scheduleRepository = new ScheduleRepositoryPg();
+const scheduleController = new ScheduleController(scheduleRepository);
+*/
+
+const motorcycleBrandController = new MotorcycleBrandController(brandRepository);
+const motorcycleModelController = new MotorcycleModelController(modelRepository);
 
 const handler = async (request: Request): Promise<Response> => {
   try {
@@ -83,7 +95,7 @@ const handler = async (request: Request): Promise<Response> => {
     } else if(url.pathname === "/motorcycle-brand") {
         if (request.method === "GET") {
             console.log("motorcycle-brand");
-            response = await motorcycleController.listMotorcyclesBrand(request);
+            response = await motorcycleBrandController.listMotorcyclesBrand(request);
             console.log(response);
         } else {
             response = new Response("Method not allowed", { status: 405 });
@@ -91,16 +103,22 @@ const handler = async (request: Request): Promise<Response> => {
     } else if (url.pathname.startsWith("/motorcycle-models/")) {
         const brandId = url.pathname.split("/")[2];
         if (request.method === "GET") {
-            console.log(url);
-            response = await motorcycleController.listMotorcycleModels(request,brandId);
+            response = await motorcycleModelController.listMotorcycleByModels(request,brandId);
         } else {
             response = new Response("Method not allowed", { status: 405 });
         }
-    }else if (url.pathname === "/maintenance-schedules") {
+    }else if (url.pathname === "/motorcycle-models") {
         if (request.method === "GET") {
-            response = await motorcycleController.listMaintenanceSchedules(request);
+            response = await motorcycleModelController.listMotorcyclesModels(request);
+        } else {
+            response = new Response("Method not allowed", { status: 405 });
+        }
+    }
+    else if (url.pathname === "/maintenance-schedules") {
+        if (request.method === "GET") {
+
         } else if (request.method === "POST") {
-            response = await motorcycleController.createMaintenanceSchedule(request);
+            response = await motorcycleController.createMaintenanceRef(request);
         } else {
             response = new Response("Method not allowed", { status: 405 });
         }

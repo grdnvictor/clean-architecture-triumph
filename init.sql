@@ -18,24 +18,12 @@ CREATE TABLE client (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     firstName VARCHAR(255) NOT NULL,
     lastName VARCHAR(255) NOT NULL,
-    userId UUID NOT NULL,
+    concessionId UUID NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO client (
-    firstName,
-    lastName,
-    userId,
-    createdAt,
-    updatedAt
-) VALUES (
-    'John',
-    'Doe',
-    (SELECT id FROM users WHERE email = 'user1@example.com'),
-    NOW(),
-    NOW()
-);
+-- FK CONSTRAINT FOR concessionId to be made
 
 -- MOTORCYCLES TABLE
 CREATE TABLE motorcycle (

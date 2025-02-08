@@ -84,9 +84,24 @@ const handler = async (request: Request): Promise<Response> => {
       }
     }
 
-    if (url.pathname === "/clients") {
-      if(request.method === "GET") {
-        response = await clientController.listClients(request);
+    if (url.pathname.startsWith("/clients")) {
+      const hasParameter = url.pathname.split("/").length > 2;
+      if (request.method === "GET") {
+        response = hasParameter
+            ? await clientController.getClientById(request)
+            : await clientController.listClients(request);
+      }
+
+      if (request.method === "POST") {
+        response = await clientController.createClient(request);
+      }
+
+      if (request.method === "PUT") {
+        response = await clientController.updateClient(request);
+      }
+
+      if (request.method === "DELETE") {
+        response = await clientController.deleteClient(request);
       }
     }
 

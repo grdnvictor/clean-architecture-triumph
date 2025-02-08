@@ -14,13 +14,13 @@ export class ClientRepositoryPostgres implements ClientRepository {
   public async save(client: ClientEntity): Promise<void> {
 
     await this.client.queryArray(
-        `INSERT INTO client (id, userid, firstname, lastname, createdAt, updatedAt)
-        VALUES ($IDENTIFIER, $USERID, $FIRSTNAME, $LASTNAME, $CREATED_AT, $UPDATED_AT)`,
+        `INSERT INTO client (id, concessionid, firstname, lastname, createdAt, updatedAt)
+        VALUES ($IDENTIFIER, $CONCESSIONID, $FIRSTNAME, $LASTNAME, $CREATED_AT, $UPDATED_AT)`,
         {
             IDENTIFIER: client.identifier,
-            USERID: client.userId,
             FIRSTNAME: client.firstName,
             LASTNAME: client.lastName,
+            CONCESSIONID: client.concessionId,
             CREATED_AT: new Date(),
             UPDATED_AT: new Date()
         }

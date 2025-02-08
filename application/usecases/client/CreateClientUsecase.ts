@@ -8,7 +8,7 @@ export class CreateClientUsecase {
         private readonly clientRepository: ClientRepository,
     ) {}
 
-    public async execute(userId: string, firstname: string, lastname: string) {
+    public async execute(firstname: string, lastname: string, concessionId: string) {
         const clientFirstname = Firstname.from(firstname);
         if (clientFirstname instanceof Error) {
             return clientFirstname;
@@ -18,7 +18,7 @@ export class CreateClientUsecase {
         if (clientLastname instanceof Error) {
             return clientLastname;
         }
-        const client = ClientEntity.create(userId, clientFirstname, clientLastname);
+        const client = ClientEntity.create(clientFirstname, clientLastname, concessionId);
 
         await this.clientRepository.save(client);
     }

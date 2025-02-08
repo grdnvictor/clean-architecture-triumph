@@ -39,7 +39,9 @@ export default function RootLayout({
                     <AppSidebar />
                     <main>
                         <SidebarTrigger />
+                        <div className={"container mx-auto p-6 w-full"}>
                         {children}
+                        </div>
                     </main>
                 </SidebarProvider>
             </AuthProvider>

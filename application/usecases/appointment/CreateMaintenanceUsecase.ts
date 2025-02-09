@@ -1,5 +1,5 @@
-import { MaintenanceScheduleRepository } from "../repositories/MaintenanceScheduleRepository";
-import {IntervalEntity} from "../../domain/entities/IntervalEntity";
+import { MaintenanceScheduleRepository } from "../../repositories/MaintenanceScheduleRepository.ts";
+import {IntervalEntity} from "../../../domain/entities/IntervalEntity.ts";
 
 export class CreateMaintenanceUsecase {
     constructor(maintenanceScheduleRepository: MaintenanceScheduleRepository) {}

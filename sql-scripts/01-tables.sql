@@ -11,6 +11,7 @@ CREATE TABLE client (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     firstName VARCHAR(255) NOT NULL,
     lastName VARCHAR(255) NOT NULL,
+    phone VARCHAR(10) NOT NULL,
     concessionId UUID NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -1,4 +1,4 @@
-import type { AppointmentRepository } from "../repositories/AppointmentRepository.ts";
+import type { AppointmentRepository } from "../../repositories/AppointmentRepository.ts";
 
 export class ListAppointmentsUsecase {
   public constructor(

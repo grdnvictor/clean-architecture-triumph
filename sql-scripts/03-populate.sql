@@ -4,6 +4,17 @@ INSERT INTO users (email, password, isAdmin, createdAt, updatedAt) VALUES
     ('user1@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', FALSE, NOW(), NOW()),
     ('user2@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', FALSE, NOW(), NOW());
 
+-- Insert records into the concession table
+INSERT INTO concession (id, name, address, siret, phoneNumber, createdAt, updatedAt) VALUES
+    (gen_random_uuid(), 'Concession A', 'Address A', '123456789', '0123456789', NOW(), NOW()),
+    (gen_random_uuid(), 'Concession B', 'Address B', '987654321', '0987654321', NOW(), NOW()),
+    (gen_random_uuid(), 'Concession C', 'Address C', '123123123', '1231231234', NOW(), NOW());
+
+-- Insert records into the client table using the IDs from the concession table
+INSERT INTO client (firstName, lastName, phone, concessionId, createdAt, updatedAt) VALUES
+    ('John', 'Doe', '0623456789', (SELECT id FROM concession LIMIT 1 OFFSET 0), NOW(), NOW()),
+    ('Jane', 'Smith', '0787654321', (SELECT id FROM concession LIMIT 1 OFFSET 1), NOW(), NOW()),
+    ('Alice', 'Johnson', '0634567890', (SELECT id FROM concession LIMIT 1 OFFSET 2), NOW(), NOW());
 
 INSERT INTO motorcycle (vin, modelId, concessionId, currentMileage, createdAt, updatedAt) VALUES
     ('1HGCM82633A123456', gen_random_uuid(), gen_random_uuid(), 12000, NOW(), NOW()),

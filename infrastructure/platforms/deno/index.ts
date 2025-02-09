@@ -87,7 +87,6 @@ const handler = async (request: Request): Promise<Response> => {
     }
     let response: Response;
 
-
     if (url.pathname === "/appointments") {
       if (request.method === "GET") {
         response = await appointmentController.listAppointments();
@@ -173,6 +172,20 @@ const handler = async (request: Request): Promise<Response> => {
               response = await motorcycleModelController.createMotorcycleModel(request);
           }
       }
+    if (url.pathname === "/client/search") {
+        if (request.method === "POST") {
+            response =  await clientController.getClientByPhone(request);
+        }
+    }
+    if (url.pathname === "/maintenance-planning") {
+        if (request.method === "GET") {
+            response = await appointmentController.listAppointments();
+        }
+        if (request.method === "POST") {
+            response = await appointmentController.createAppointment(request);
+        }
+
+    }
 
     if (!response) {
         response = new Response("Not found", { status: 404 });

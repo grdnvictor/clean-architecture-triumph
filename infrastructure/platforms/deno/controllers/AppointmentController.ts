@@ -1,7 +1,7 @@
 import type { AppointmentRepository } from "../../../../application/repositories/AppointmentRepository.ts";
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository.ts";
 import { CreateAppointmentUsecase } from "../../../../application/usecases/CreateAppointmentUsecase.ts";
-import { ListAppointmentsUsecase } from "../../../../application/usecases/ListAppointmentsUsecase.ts";
+import { ListAppointmentsUsecase } from "../../../../application/usecases/appointment/ListAppointmentsUsecase.ts";
 import { exhaustive } from "npm:exhaustive";
 import { createAppointmentRequestSchema } from "../schemas/createAppointmentRequestSchema.ts";
 
@@ -42,9 +42,9 @@ export class AppointmentController {
       });
     }
 
-    const { date, motorcycleId } = validation.data;
+    const { date, clientId ,motorcycleId } = validation.data;
 
-    const error = await createAppointmentUsecase.execute(date, motorcycleId);
+    const error = await createAppointmentUsecase.execute(date, clientId, motorcycleId);
 
     if (!error) {
       return new Response(null, {

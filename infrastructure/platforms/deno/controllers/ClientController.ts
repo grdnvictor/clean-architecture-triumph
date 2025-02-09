@@ -1,13 +1,13 @@
 import type { ClientRepository } from "../../../../application/repositories/ClientRepository.ts";
-import { createClientRequestSchema } from "../schemas/client/createClientRequestSchema.ts";
-import { updateClientRequestSchema } from "../schemas/client/updateClientRequestSchema.ts";
-import {ListClientsUsecase} from "../../../../application/usecases/client/ListClientsUsecase.ts";
-import {CreateClientUsecase} from "../../../../application/usecases/client/CreateClientUsecase.ts";
-import {DeleteClientUsecase} from "../../../../application/usecases/client/DeleteClientUsecase.ts";
-import {UpdateClientUsecase} from "../../../../application/usecases/client/UpdateClientUsecase.ts";
-import {GetClientByIdUsecase} from "../../../../application/usecases/client/GetClientByIdUsecase.ts";
-import {deleteClientRequestSchema} from "../schemas/client/deleteClientRequestSchema.ts";
-import {getClientByIdRequestSchema} from "../schemas/client/getClientByIdRequestSchema.ts";
+import { createClientRequestSchema } from "../schemas/client/createClientRequestSchema";
+import { updateClientRequestSchema } from "../schemas/client/updateClientRequestSchema";
+import {ListClientsUsecase} from "../../../../application/usecases/client/ListClientsUsecase";
+import {CreateClientUsecase} from "../../../../application/usecases/client/CreateClientUsecase";
+import {DeleteClientUsecase} from "../../../../application/usecases/client/DeleteClientUsecase";
+import {UpdateClientUsecase} from "../../../../application/usecases/client/UpdateClientUsecase";
+import {GetClientByIdUsecase} from "../../../../application/usecases/client/GetClientByIdUsecase";
+import {deleteClientRequestSchema} from "../schemas/client/deleteClientRequestSchema";
+import {getClientByIdRequestSchema} from "../schemas/client/getClientByIdRequestSchema";
 
 export class ClientController {
   constructor(private readonly repository: ClientRepository) {}

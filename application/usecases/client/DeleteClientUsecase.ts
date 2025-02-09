@@ -1,4 +1,4 @@
-import { ClientRepository } from "../../repositories/ClientRepository.ts";
+import { ClientRepository } from "../../repositories/ClientRepository";
 
 export class DeleteClientUsecase {
     constructor(private readonly clientRepository: ClientRepository) {}

@@ -8,8 +8,8 @@ import {AuthentificationUsecase} from "../../../application/usecases/Authentific
 import {TokenService} from "../../services/TokenService";
 import {PasswordService} from "../../services/PasswordService";
 import * as process from "node:process";
-import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
-import {ClientController} from "./controllers/ClientController.ts";
+import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres";
+import {ClientController} from "./controllers/ClientController";
 
 const options = {
   port: 8000,
@@ -74,13 +74,24 @@ const handler = async (request: Request): Promise<Response> => {
       }
     }
 
-    if (url.pathname === "/motorcycles") {
+    if (url.pathname.startsWith("/motorcycles")) {
+      const hasParameter = url.pathname.split("/").length > 2;
       if (request.method === "GET") {
-        response = await motorcycleController.listMotorcycles(request);
-      } else if (request.method === "POST") {
+        response = hasParameter
+            ? await motorcycleController.getMotorcycleById(request)
+            : await motorcycleController.listMotorcycles(request);
+      }
+
+      if (request.method === "POST") {
         response = await motorcycleController.createMotorcycle(request);
-      } else {
-        response = new Response("Method not allowed", { status: 405 });
+      }
+
+      if (request.method === "PUT") {
+        response = await motorcycleController.updateMotorcycle(request);
+      }
+
+      if (request.method === "DELETE") {
+        response = await motorcycleController.deleteMotorcycle(request);
       }
     }
 

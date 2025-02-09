@@ -1,4 +1,4 @@
-import {MileageInvalidError} from "../errors/MileageInvalidError.ts";
+import {MileageInvalidError} from "../errors/MileageInvalidError";
 
 export class Mileage {
     private constructor(public readonly value: number) {}

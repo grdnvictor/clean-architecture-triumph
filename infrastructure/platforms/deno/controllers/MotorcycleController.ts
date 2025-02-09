@@ -1,14 +1,14 @@
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository";
 import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres";
-import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema";
+import { createMotorcycleRequestSchema } from "../schemas/motorcycle/createMotorcycleRequestSchema";
 import {MotorcycleEntity} from "../../../../domain/entities/MotorcycleEntity";
+import {deleteClientRequestSchema} from "../schemas/client/deleteClientRequestSchema";
+import {DeleteClientUsecase} from "../../../../application/usecases/client/DeleteClientUsecase";
+import {DeleteMotorcycleUsecase} from "../../../../application/usecases/motorcycle/DeleteMotorcycleUsecase";
+import {deleteMotorcycleRequestSchema} from "../schemas/motorcycle/deleteMotorcycleRequestSchema";
 
 export class MotorcycleController {
-  private repository: MotorcycleRepository;
-
-  constructor() {
-    this.repository = new MotorcycleRepositoryPostgres();
-  }
+  constructor(private readonly repository: MotorcycleRepository) {}
 
   public async listMotorcycles(_: Request): Promise<Response> {
     const motorcycles = await this.repository.all();
@@ -55,7 +55,17 @@ export class MotorcycleController {
     const id = url.pathname.split("/").pop();
     if (!id) return new Response("Missing ID", { status: 400 });
 
-    await this.repository.delete(id);
-    return new Response("Deleted successfully", { status: 200 });
+    const validation = deleteMotorcycleRequestSchema.safeParse({ id });
+    if (!validation.success) {
+      return new Response("Invalid ID format", {
+        status: 400
+      });
+    }
+
+    const deleteMotorcycleUsecase = new DeleteMotorcycleUsecase(this.repository);
+    await deleteMotorcycleUsecase.execute(id);
+    return new Response(null, {
+      status: 200
+    });
   }
 }

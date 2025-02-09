@@ -1,7 +1,7 @@
-import {ClientEntity} from "../../../domain/entities/ClientEntity.ts";
-import {ClientRepository} from "../../repositories/ClientRepository.ts";
-import {Firstname} from "../../../domain/types/Firstname.ts";
-import {Lastname} from "../../../domain/types/Lastname.ts";
+import {ClientEntity} from "../../../domain/entities/ClientEntity";
+import {ClientRepository} from "../../repositories/ClientRepository";
+import {Firstname} from "../../../domain/types/Firstname";
+import {Lastname} from "../../../domain/types/Lastname";
 
 export class CreateClientUsecase {
     public constructor(

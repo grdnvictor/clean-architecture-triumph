@@ -12,10 +12,9 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
 
   public async save(motorcycle: MotorcycleEntity): Promise<void> {
 
-    // return new reponse of motorcycleEntity
-
     await this.client.queryArray(
-        "INSERT INTO motorcycle (id, vin, modelId, concessionId, currentMileage, createdAt, updatedAt) VALUES ($IDENTIFIER, $VIN, $MODELID, $CONCESSIONID, $CURRENTMILEAGE, $CREATED_AT, $UPDATED_AT)",
+        `INSERT INTO motorcycle (id, vin, modelId, concessionId, currentMileage, createdAt, updatedAt) 
+        VALUES ($IDENTIFIER, $VIN, $MODELID, $CONCESSIONID, $CURRENTMILEAGE, $CREATED_AT, $UPDATED_AT)`,
         {
             IDENTIFIER: motorcycle.identifier,
             VIN: motorcycle.vin,

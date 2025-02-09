@@ -1,26 +1,30 @@
+import {Brand} from "../types/Brand";
+import {Model} from "../types/Model";
+import {Mileage} from "../types/Mileage";
+
 export class MotorcycleEntity {
   private constructor(
       public readonly identifier: string,
       public readonly vin: string,
       public readonly modelId: string,
-      public readonly concessionId: string,
+      public readonly concessionId: number,
       public readonly currentMileage: number,
       public readonly createdAt: Date,
       public readonly updatedAt: Date,
   ) {}
 
   public static create(
-      vin: string,
-      modelId: string,
-      concessionId: string,
-      currentMileage: number = 0
+      vin: Brand,
+      modelId: Model,
+      concessionId: number,
+      currentMileage: Mileage
   ) {
     return new MotorcycleEntity(
         crypto.randomUUID(),
-        vin,
-        modelId,
+        vin.value,
+        modelId.value,
         concessionId,
-        currentMileage,
+        currentMileage.value,
         new Date(),
         new Date()
     );

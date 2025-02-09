@@ -63,4 +63,15 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
     );
     return result.rows.length > 0 ? result.rows[0] : null;
   }
+
+  public async existsInConcession(id: string, concessionId: string): Promise<boolean> {
+    const result = await this.client.queryObject<MotorcycleEntity>(
+        "SELECT * FROM motorcycle WHERE id = $ID AND concessionId = $CONCESSIONID",
+        {
+            ID: id,
+            CONCESSIONID: concessionId
+        }
+    );
+    return result.rows.length > 0;
+  }
 }

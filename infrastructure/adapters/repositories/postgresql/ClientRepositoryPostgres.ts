@@ -59,6 +59,17 @@ export class ClientRepositoryPostgres implements ClientRepository {
     });
   }
 
+  public async existsInConcession(id: string, concessionId: string): Promise<boolean> {
+    const result = await this.client.queryObject<ClientEntity>(
+        "SELECT * FROM client WHERE id = $ID AND concessionId = $CONCESSIONID",
+        {
+            ID: id,
+            CONCESSIONID: concessionId
+        }
+    );
+    return result.rows.length > 0;
+  }
+
   public async findByOption(options: { where?: Record<string, any>; select?: string[]; orderBy?: string; limit?: number; offset?: number; }): Promise<ClientEntity[]> {
         let query = "SELECT ";
 

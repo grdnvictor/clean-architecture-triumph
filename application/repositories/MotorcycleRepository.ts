@@ -4,5 +4,6 @@ export interface MotorcycleRepository {
   save(motorcycle: MotorcycleEntity): Promise<void>;
   all(): Promise<MotorcycleEntity[]>;
   findOneById(id: string): Promise<MotorcycleEntity | null>;
+  existsInConcession(id: string, concessionId: string): Promise<boolean>;
   delete(id: string): Promise<void>;
 }

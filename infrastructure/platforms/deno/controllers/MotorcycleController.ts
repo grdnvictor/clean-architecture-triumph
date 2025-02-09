@@ -1,3 +1,4 @@
+
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository";
 import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres";
 import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema";

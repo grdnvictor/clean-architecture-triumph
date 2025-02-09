@@ -22,11 +22,11 @@ export class UpdateClientUsecase {
         }
 
         if (phoneNumber) {
-            const concessionPhoneNumner = PhoneNumber.from(phoneNumber);
-            if (concessionPhoneNumner instanceof Error) {
-                return concessionPhoneNumner;
+            const concessionPhoneNumber = PhoneNumber.from(phoneNumber);
+            if (concessionPhoneNumber instanceof Error) {
+                return concessionPhoneNumber;
             }
-            updatedData.phoneNumber = concessionPhoneNumner.value;
+            updatedData.phoneNumber = concessionPhoneNumber.value;
         }
 
         if (siret) {

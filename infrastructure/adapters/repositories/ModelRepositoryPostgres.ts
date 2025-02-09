@@ -25,5 +25,24 @@ export class ModelRepositoryPostgres implements ModelRepository{
             return [];
         }
     }
+    public async save(model: ModelEntity): Promise<void> {
+        try {
+            const query = `
+
+                INSERT INTO ${this.tableName} (name, year, brand_id, description, maintenance_interval_km, maintenance_interval_months)
+                VALUES ($1, $2, $3, $4, $5, $6)
+            `;
+            await this.client.queryArray(query, [
+                model.name,
+                model.year,
+                model.brandId,
+                JSON.stringify(model.description),
+                model.maintenanceIntervalKm,
+                model.maintenanceIntervalMonths
+            ]);
+        } catch (error) {
+            console.error(`Error in insert for ${this.tableName}:`, error);
+        }
+    }
 
 }

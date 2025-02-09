@@ -94,7 +94,6 @@ const handler = async (request: Request): Promise<Response> => {
       }
     } else if(url.pathname === "/motorcycle-brand") {
         if (request.method === "GET") {
-            console.log("motorcycle-brand");
             response = await motorcycleBrandController.listMotorcyclesBrand(request);
             console.log(response);
         } else {
@@ -103,9 +102,12 @@ const handler = async (request: Request): Promise<Response> => {
     } else if (url.pathname === "/motorcycle-models") {
         if (request.method === "GET") {
             response = await motorcycleModelController.listMotorcyclesModels(request);
+        }else if (request.method === "POST") {
+            console.log("create motorcycle model");
+            response = await motorcycleModelController.createMotorcycleModel(request);
         } else {
             response = new Response("Method not allowed", { status: 405 });
-        }
+    }
     }else {
       response = new Response("Not found", { status: 404 });
     }

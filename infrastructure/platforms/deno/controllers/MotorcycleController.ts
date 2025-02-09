@@ -36,30 +36,4 @@ export class MotorcycleController {
       ModelLengthTooShortError: () => new Response("ModelLengthTooShortError", { status: 400 }),
     });
   }
-  public async createMaintenanceRef(request: Request): Promise<Response> {
-    const createMaintenanceRefUsecase = new CreateMaintenanceRefUsecase(this.motorcycleRepository);
-    const body = await request.json();
-    const validation = createMaintenanceRefRequestSchema.safeParse(body);
-
-    if (!validation.success) {
-      return new Response("Malformed request", {
-        status: 400,
-      });
-    }
-
-    const { maintenanceIntervalKm, maintenanceIntervalMonths } = validation.data;
-    const error = await createMaintenanceRefUsecase.execute(maintenanceIntervalKm, maintenanceIntervalMonths);
-
-    if (!error) {
-      return new Response(null, {
-        status: 201,
-      });
-    }
-
-    return exhaustive(error.name, {
-      MaintenanceIntervalKmTooShortError: () => new Response("MaintenanceIntervalKmTooShortError", { status: 400 }),
-      MaintenanceIntervalMonthsTooShortError: () => new Response("MaintenanceIntervalMonthsTooShortError", { status: 400 }),
-    });
-
-  }
 }

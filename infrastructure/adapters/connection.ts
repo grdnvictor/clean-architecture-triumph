@@ -15,12 +15,14 @@ export class DatabaseConnection {
     }
 
     public static getInstance(): DatabaseConnection {
-        if (!DatabaseConnection.instance) {
-            console.log("Creating new database connection");
-            DatabaseConnection.instance = new DatabaseConnection();
+        return new DatabaseConnection();
 
-        }
-        return DatabaseConnection.instance;
+        // TODO: voir comment gérer les requêtes concurrentes
+        // if (!DatabaseConnection.instance) {
+        //     console.log("Creating new database connection");
+        //     DatabaseConnection.instance = new DatabaseConnection();
+        // }
+        // return DatabaseConnection.instance;
     }
 
     public async connect() {

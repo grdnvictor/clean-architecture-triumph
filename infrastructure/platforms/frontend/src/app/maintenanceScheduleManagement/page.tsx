@@ -14,9 +14,9 @@ interface MotorcycleModel {
     name: string;
     year: number;
     brandId: string;
-    distanceInterval: string;
-    timeInterval: string;
-    maintenanceDescription: string;
+    maintenanceIntervalKm: number;
+    maintenanceIntervalMonths: number;
+    description: string;
 }
 
 export default function ModelManagement() {
@@ -28,10 +28,10 @@ export default function ModelManagement() {
     const [newModel, setNewModel] = useState<MotorcycleModel>({
         name: '',
         year: new Date().getFullYear(),
-        brandId: '',
-        distanceInterval: '',
-        timeInterval: '',
-        maintenanceDescription: ''
+        brandId: 0,
+        maintenanceIntervalKm: 0,
+        maintenanceIntervalMonths: 0,
+        description: ''
     });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState('');
@@ -39,11 +39,20 @@ export default function ModelManagement() {
     const currentYear = new Date().getFullYear();
 
     useEffect(() => {
-        (async () => {
-            await fetchMotorcycleBrands();
-            await fetchModels();
-        })();
+      fetchMotorcycleBrands();
+       fetchModels();
     }, []);
+    useEffect(() => {
+        if (selectedDisplayBrand) {
+            console.log(models)
+            console.log(selectedDisplayBrand)
+            const filtered = models.filter(model => model.brand_id == selectedDisplayBrand);
+            console.log('Filtered Models:', filtered);
+            setFilteredModels(filtered);
+        } else {
+            setFilteredModels(models);
+        }
+    }, [selectedDisplayBrand, models]);
 
 
 
@@ -65,8 +74,13 @@ export default function ModelManagement() {
         try {
             const response = await fetch('http://localhost:8000/motorcycle-models');
             const data: MotorcycleModel[] = await response.json();
-            setModels(data);
-            setFilteredModels(data);
+            const formattedData: MotorcycleModel[] = data.map(model => ({
+                ...model,
+                brandId: model.brand_id,
+            }));
+
+            setModels(formattedData);
+            setFilteredModels(formattedData);
         } catch (error) {
             setError('Erreur lors du chargement des modèles');
         } finally {
@@ -92,14 +106,14 @@ export default function ModelManagement() {
             });
 
             if (response.ok) {
-                await fetchModels();
+              await fetchModels();
                 setNewModel({
                     name: '',
                     year: new Date().getFullYear(),
                     brandId: '',
-                    distanceInterval: '',
-                    timeInterval: '',
-                    maintenanceDescription: ''
+                    maintenanceIntervalKm: 0,
+                    maintenanceIntervalMonths: 0,
+                    description: ''
                 });
                 setSelectedBrand('');
             }
@@ -180,10 +194,10 @@ export default function ModelManagement() {
                                     type="number"
                                     className="w-full px-3 py-2 rounded-md border border-gray-300"
                                     placeholder="ex: 10000"
-                                    value={newModel.distanceInterval}
+                                    value={newModel.maintenanceIntervalKm}
                                     onChange={(e) => setNewModel({
                                         ...newModel,
-                                        distanceInterval: e.target.value
+                                        maintenanceIntervalKm: parseInt(e.target.value)
                                     })}
                                     required
                                 />
@@ -197,10 +211,10 @@ export default function ModelManagement() {
                                     type="number"
                                     className="w-full px-3 py-2 rounded-md border border-gray-300"
                                     placeholder="ex: 12"
-                                    value={newModel.timeInterval}
+                                    value={newModel.maintenanceIntervalMonths}
                                     onChange={(e) => setNewModel({
                                         ...newModel,
-                                        timeInterval: e.target.value
+                                        maintenanceIntervalMonths: parseInt(e.target.value)
                                     })}
                                     required
                                 />
@@ -214,10 +228,10 @@ export default function ModelManagement() {
                                     className="w-full px-3 py-2 rounded-md border border-gray-300"
                                     rows={3}
                                     placeholder="Description des opérations d'entretien"
-                                    value={newModel.maintenanceDescription}
+                                    value={newModel.description}
                                     onChange={(e) => setNewModel({
                                         ...newModel,
-                                        maintenanceDescription: e.target.value
+                                        description: e.target.value
                                     })}
                                     required
                                 />
@@ -263,17 +277,23 @@ export default function ModelManagement() {
                                     <div key={model.id} className="p-4 border rounded-md">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <h3 className="font-semibold">
-                                                    {brand?.name} {model.name} ({model.year})
-                                                </h3>
+                                                {brand ? (
+                                                    <h3 className="font-semibold">
+                                                        {brand.name} {model.name} ({model.year})
+                                                    </h3>
+                                                ) : (
+                                                    <h3 className="font-semibold text-red-500">
+                                                        Marque non trouvée {model.name} ({model.year})
+                                                    </h3>
+                                                )}
                                                 <p className="text-sm text-gray-600">
-                                                    Entretien tous les: {model.distanceInterval} km ou {model.timeInterval} mois
+                                                    Entretien tous les: {model.maintenanceIntervalKm} km ou {model.maintenanceIntervalMonths} mois
                                                 </p>
-                                                <p className="mt-2">{model.maintenanceDescription}</p>
+                                                <p className="mt-2">{model.description?.type || model.description}</p> {/* Accessing description */}
                                             </div>
                                             <button
                                                 className="text-blue-600 hover:text-blue-800 transition-colors"
-                                                onClick={() => {/* Logique de modification */}}
+                                                onClick={() => {}}
                                             >
                                                 Modifier
                                             </button>

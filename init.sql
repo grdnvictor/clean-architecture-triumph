@@ -47,26 +47,29 @@ INSERT INTO brand (name) VALUES
                              ('Aprilia');
 -- MODEL TABLE
 CREATE TABLE model (
-    id SERIAL PRIMARY KEY,
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    brand_id INT REFERENCES brand(id),
     year INT NOT NULL,
-    maintenanceIntervalKm INT NOT NULL,
-    maintenanceIntervalMonths INT NOT NULL,
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    brand_id INT REFERENCES brand(id),
+    description JSONB NOT NULL,
+    maintenance_interval_km INT NOT NULL,
+    maintenance_interval_months INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO model (name, brand_id, year, maintenanceIntervalKm, maintenanceIntervalMonths, createdAt, updatedAt) VALUES
-    ('YZF-R1', (SELECT id FROM brand WHERE name = 'Yamaha'), 2023, 10000, 12, NOW(), NOW()),
-    ('CBR1000RR', (SELECT id FROM brand WHERE name = 'Honda'), 2023, 10000, 12, NOW(), NOW()),
-    ('GSX-R1000', (SELECT id FROM brand WHERE name = 'Suzuki'), 2023, 10000, 12, NOW(), NOW()),
-    ('Ninja ZX-10R', (SELECT id FROM brand WHERE name = 'Kawasaki'), 2023, 10000, 12, NOW(), NOW()),
-    ('Panigale V4', (SELECT id FROM brand WHERE name = 'Ducati'), 2023, 10000, 12, NOW(), NOW()),
-    ('S1000RR', (SELECT id FROM brand WHERE name = 'BMW'), 2023, 10000, 12, NOW(), NOW()),
-    ('Street Glide', (SELECT id FROM brand WHERE name = 'Harley-Davidson'), 2023, 10000, 12, NOW(), NOW()),
-    ('Speed Triple 1200 RS', (SELECT id FROM brand WHERE name = 'Triumph'), 2023, 10000, 12, NOW(), NOW()),
-    ('1290 Super Duke R', (SELECT id FROM brand WHERE name = 'KTM'), 2023, 10000, 12, NOW(), NOW()),
-    ('RSV4', (SELECT id FROM brand WHERE name = 'Aprilia'), 2023, 10000, 12, NOW(), NOW());
+
+-- Insert data into the model table
+INSERT INTO model (name, year, brand_id, description, maintenance_interval_km, maintenance_interval_months, created_at, updated_at) VALUES
+    ('YZF-R1', 2023, (SELECT id FROM brand WHERE name = 'Yamaha'), 'changer les filtres', 10000, 12, NOW(), NOW()),
+    ('CBR1000RR', 2023, (SELECT id FROM brand WHERE name = 'Honda'), 'vérifier les freins', 10000, 12, NOW(), NOW()),
+    ('GSX-R1000', 2023, (SELECT id FROM brand WHERE name = 'Suzuki'), 'changer l huile', 10000, 12, NOW(), NOW()),
+    ('Ninja ZX-10R', 2023, (SELECT id FROM brand WHERE name = 'Kawasaki'), 'vérifier la chaîne', 10000, 12, NOW(), NOW()),
+    ('Panigale V4', 2023, (SELECT id FROM brand WHERE name = 'Ducati'), 'vérifier les pneus', 10000, 12, NOW(), NOW()),
+    ('S1000RR', 2023, (SELECT id FROM brand WHERE name = 'BMW'), 'changer les bougies', 10000, 12, NOW(), NOW()),
+    ('Street Glide', 2023, (SELECT id FROM brand WHERE name = 'Harley-Davidson'), 'vérifier la batterie', 10000, 12, NOW(), NOW()),
+    ('Speed Triple 1200 RS', 2023, (SELECT id FROM brand WHERE name = 'Triumph'), 'vérifier les suspensions', 10000, 12, NOW(), NOW()),
+    ('1290 Super Duke R', 2023, (SELECT id FROM brand WHERE name = 'KTM'), 'vérifier le système de refroidissement', 10000, 12, NOW(), NOW()),
+    ('RSV4', 2023, (SELECT id FROM brand WHERE name = 'Aprilia'), 'vérifier l embrayage', 10000, 12, NOW(), NOW());
 
 -- PART TABLE
 CREATE TABLE part (

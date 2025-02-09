@@ -1,6 +1,6 @@
 import {ConcessionRepository} from "../../repositories/ConcessionRepository.ts";
 
-export class ListClientsUsecase {
+export class ListConcessionsUsecase {
     public constructor(
         private readonly concessionRepository: ConcessionRepository,
     ) {}

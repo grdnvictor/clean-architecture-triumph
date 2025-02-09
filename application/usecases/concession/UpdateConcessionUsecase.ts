@@ -2,7 +2,7 @@ import {PhoneNumber} from "../../../domain/types/PhoneNumber.ts";
 import {Siret} from "../../../domain/types/Siret.ts";
 import {ConcessionRepository} from "../../repositories/ConcessionRepository.ts";
 
-export class UpdateClientUsecase {
+export class UpdateConcessionUsecase {
     constructor(private readonly concessionRepository: ConcessionRepository) {}
 
     public async execute(id: string, name?: string, phoneNumber?: string, siret?: string, address?: string) {

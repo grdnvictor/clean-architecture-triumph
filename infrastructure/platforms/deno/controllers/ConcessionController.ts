@@ -1,22 +1,21 @@
-import type { ClientRepository } from "../../../../application/repositories/ClientRepository.ts";
 import { createClientRequestSchema } from "../schemas/client/createClientRequestSchema.ts";
 import { updateClientRequestSchema } from "../schemas/client/updateClientRequestSchema.ts";
-
 import {
+  ListClientsUsecase,
   CreateClientUsecase,
   DeleteClientUsecase,
-  GetClientByIdUsecase,
   UpdateClientUsecase,
-  ListClientsUsecase
+  GetClientByIdUsecase
 } from "../../../../application/usecases/client/index.ts";
 
 import {deleteClientRequestSchema} from "../schemas/client/deleteClientRequestSchema.ts";
 import {getClientByIdRequestSchema} from "../schemas/client/getClientByIdRequestSchema.ts";
+import {ConcessionRepository} from "../../../../application/repositories/ConcessionRepository.ts";
 
-export class ClientController {
-  constructor(private readonly repository: ClientRepository) {}
+export class ConcessionController {
+  constructor(private readonly repository: ConcessionRepository) {}
 
-  public async listClients(_: Request): Promise<Response> {
+  public async listConcessions(): Promise<Response> {
     const listClientsUsecase = new ListClientsUsecase(
         this.repository
     );

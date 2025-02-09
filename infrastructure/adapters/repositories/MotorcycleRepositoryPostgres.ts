@@ -33,33 +33,36 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
   }
 
   public async findOneById(id: string): Promise<MotorcycleEntity | null> {
-    const result = await this.client.queryObject<MotorcycleEntity>(
-        "SELECT * FROM motorcycle WHERE id = $1",
-        id
-    );
-    return result.rows.length > 0 ? result.rows[0] : null;
+      const result = await this.client.queryObject<MotorcycleEntity>(
+          "SELECT * FROM motorcycle WHERE id = $ID",
+          { ID: id }
+      );
+      return result.rows.length > 0 ? result.rows[0] : null;
   }
 
-  public async update(id: string, updatedData: Partial<MotorcycleEntity>): Promise<void> {
-    await this.client.queryArray(
-        "UPDATE motorcycle SET vin = COALESCE($2, vin), modelId = COALESCE($3, modelId), concessionId = COALESCE($4, concessionId), currentMileage = COALESCE($5, currentMileage), updatedAt = NOW() WHERE id = $1",
-        id,
-        updatedData.vin,
-        updatedData.modelId,
-        updatedData.concessionId,
-        updatedData.currentMileage
-    );
-  }
+
+    public async update(id: string, updatedData: Partial<MotorcycleEntity>): Promise<void> {
+        await this.client.queryArray(
+            "UPDATE motorcycle SET currentMileage = COALESCE($CURRENTMILEAGE, currentMileage), updatedAt = NOW() WHERE id = $ID",
+            {
+                ID: id,
+                CURRENTMILEAGE: updatedData.currentMileage
+            }
+        );
+    }
+
 
   public async delete(id: string): Promise<void> {
-    await this.client.queryArray("DELETE FROM motorcycle WHERE id = $1", id);
+      await this.client.queryArray("DELETE FROM motorcycle WHERE id = $ID", {
+          ID: id
+      });
   }
 
   public async getMotorcycleById(id: string): Promise<MotorcycleEntity | null> {
-    const result = await this.client.queryObject<MotorcycleEntity>(
-        "SELECT * FROM motorcycle WHERE id = $1",
-        id
-    );
-    return result.rows.length > 0 ? result.rows[0] : null;
-  }
+        const result = await this.client.queryObject<MotorcycleEntity>(
+            "SELECT * FROM motorcycle WHERE id = $ID",
+            { ID: id }
+        );
+        return result.rows.length > 0 ? result.rows[0] : null;
+    }
 }

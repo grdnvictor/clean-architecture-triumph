@@ -24,6 +24,19 @@ CREATE TABLE client (
 );
 
 -- FK CONSTRAINT FOR concessionId to be made
+CREATE TABLE concession (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    siret VARCHAR(255) NOT NULL,
+    phoneNumber VARCHAR(255) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE client
+    ADD CONSTRAINT fk_client_concession FOREIGN KEY (concessionId) REFERENCES concession(id) ON DELETE CASCADE;
+
 
 -- MOTORCYCLES TABLE
 CREATE TABLE motorcycle (

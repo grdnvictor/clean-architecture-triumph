@@ -15,6 +15,8 @@ import {MotorcycleBrandController} from "./controllers/MotorcycleBrandController
 import {MotorcycleModelController} from "./controllers/MotorcycleModelController";
 import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
 import {ClientController} from "./controllers/ClientController.ts";
+import {ConcessionRepositoryPostgres} from "../../adapters/repositories/ConcessionRepositoryPostgres.ts";
+import {ConcessionController} from "./controllers/ConcessionController.ts";
 
 const options = {
   port: 8000,
@@ -27,6 +29,9 @@ const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
+
+const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
+const concessionController = new ConcessionController(concessionRepositoryPostgres);
 
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
@@ -118,6 +123,27 @@ const handler = async (request: Request): Promise<Response> => {
       if (request.method === "DELETE") {
         response = await clientController.deleteClient(request);
       }
+    }
+
+    if (url.pathname.startsWith("/concessions")) {
+        const hasParameter = url.pathname.split("/").length > 2;
+        if (request.method === "GET") {
+            response = hasParameter
+                ? await concessionController.getConcessionById(request)
+                : await concessionController.listConcessions();
+        }
+
+        if (request.method === "POST") {
+            response = await concessionController.createConcession(request);
+        }
+
+        if (request.method === "PUT") {
+            response = await concessionController.updateConcession(request);
+        }
+
+        if (request.method === "DELETE") {
+          response = await concessionController.deleteConcession(request);
+        }
     }
 
     if (url.pathname === "/auth/signin") {

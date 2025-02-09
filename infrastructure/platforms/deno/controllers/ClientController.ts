@@ -5,7 +5,7 @@ import {
   updateClientRequestSchema,
   deleteClientRequestSchema,
   getClientByIdRequestSchema
-} from "../schemas/client/index.ts";
+} from "../schemas/client/index";
 
 import {
   CreateClientUsecase,

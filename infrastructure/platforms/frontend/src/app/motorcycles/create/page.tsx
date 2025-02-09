@@ -6,8 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {useRequireAuth} from "@/hooks/useRequireAuth";
 
 export default function CreateMotorcyclePage() {
+    // const authChecked = useRequireAuth();
+    //
+    // if (!authChecked) {
+    //     return null;
+    // }
+
     const [formData, setFormData] = useState({
         vin: "",
         modelId: "",

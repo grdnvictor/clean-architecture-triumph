@@ -12,7 +12,8 @@ import {
     AuthentificationController,
     MotorcycleBrandController,
     MotorcycleModelController,
-    ConcessionController
+    ConcessionController,
+    PartController
 } from "./controllers/index.ts";
 
 import {
@@ -21,7 +22,8 @@ import {
     UserRepositoryPostgres,
     BrandRepositoryPostgres,
     ModelRepositoryPostgres,
-    ClientRepositoryPostgres
+    ClientRepositoryPostgres,
+    PartRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
 
 
@@ -35,8 +37,9 @@ const userRepository = new UserRepositoryPostgres();
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const partRepositoryPostgres = new PartRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
-
+const partController = new PartController(partRepositoryPostgres);
 const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
 const concessionController = new ConcessionController(concessionRepositoryPostgres);
 
@@ -98,17 +101,35 @@ const handler = async (request: Request): Promise<Response> => {
       }
     }
 
-      if (url.pathname.startsWith("/motorcycles")) {
-      if (request.method === "GET") {
-        response = await motorcycleController.listMotorcycles(request);
-      }
-      if (request.method === "POST") {
-        response = await motorcycleController.createMotorcycle(request);
+      if (url.pathname.startsWith("/parts")) {
+          const hasParameter = url.pathname.split("/").length > 2;
+          if (request.method === "GET") {
+              response = hasParameter
+                  ? await partController.getPartById(request)
+                  : await partController.listParts(request);
+          }
+
+          if (request.method === "POST") {
+              response = await partController.createPart(request);
+          }
+
+          if (request.method === "PUT") {
+              response = await partController.updatePart(request);
+          }
+
+          if (request.method === "DELETE") {
+              response = await partController.deletePart(request);
+          }
       }
 
-        if (request.method === "DELETE") {
-            response = await motorcycleController.deleteMotorcycle(request);
-        }
+    if (url.pathname === "/motorcycles") {
+      if (request.method === "GET") {
+        response = await motorcycleController.listMotorcycles(request);
+      } else if (request.method === "POST") {
+        response = await motorcycleController.createMotorcycle(request);
+      } else {
+        response = new Response("Method not allowed", { status: 405 });
+      }
     }
 
     if (url.pathname.startsWith("/clients")) {

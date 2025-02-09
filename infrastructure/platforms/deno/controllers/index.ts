@@ -6,3 +6,4 @@ export {MotorcycleBrandController} from "./MotorcycleBrandController.ts";
 export {MotorcycleController} from "./MotorcycleController.ts";
 export {MotorcycleModelController} from "./MotorcycleModelController.ts";
 export {ScheduleController} from "./ScheduleController.ts";
+export {PartController} from "./PartController.ts";

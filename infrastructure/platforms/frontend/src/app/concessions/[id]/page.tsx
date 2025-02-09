@@ -6,8 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {useRequireAuth} from "@/hooks/useRequireAuth";
 
 export default function EditConcessionPage() {
+    // const authChecked = useRequireAuth();
+    //
+    // if (!authChecked) {
+    //     return null;
+    // }
     const { id } = useParams();
     const router = useRouter();
 

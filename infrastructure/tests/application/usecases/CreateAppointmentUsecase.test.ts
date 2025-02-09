@@ -1,7 +1,7 @@
 import { expect } from "jsr:@std/expect";
 import { CreateAppointmentUsecase } from "../../../../application/usecases/CreateAppointmentUsecase.ts";
 import { AppointmentRepositoryInMemory } from "../../../adapters/repositories/AppointmentRepositoryInMemory.ts";
-import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres.ts";
+import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/postgresql/MotorcycleRepositoryPostgres.ts";
 import { MotorcycleEntity } from "../../../../domain/entities/MotorcycleEntity.ts";
 import { Brand } from "../../../../domain/types/Brand.ts";
 import { Model } from "../../../../domain/types/Model.ts";

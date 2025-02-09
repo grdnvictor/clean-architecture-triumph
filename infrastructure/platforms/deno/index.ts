@@ -1,15 +1,27 @@
 import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
-import { MotorcycleRepositoryPostgres } from "../../adapters/repositories/MotorcycleRepositoryPostgres";
-import { AppointmentController } from "./controllers/AppointmentController";
-import { MotorcycleController } from "./controllers/MotorcycleController";
-import {AuthentificationController} from "./controllers/AuthentificationController";
-import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory";
 import {AuthentificationUsecase} from "../../../application/usecases/AuthentificationUsecase";
 import {TokenService} from "../../services/TokenService";
 import {PasswordService} from "../../services/PasswordService";
-import * as process from "node:process";
-import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres";
-import {ClientController} from "./controllers/ClientController";
+
+import {
+    ClientController,
+    AppointmentController,
+    MotorcycleController,
+    AuthentificationController,
+    MotorcycleBrandController,
+    MotorcycleModelController,
+    ConcessionController
+} from "./controllers/index.ts";
+
+import {
+    ConcessionRepositoryPostgres,
+    MotorcycleRepositoryPostgres,
+    UserRepositoryPostgres,
+    BrandRepositoryPostgres,
+    ModelRepositoryPostgres,
+    ClientRepositoryPostgres
+} from "../../adapters/repositories/postgresql/index.ts";
+
 
 const options = {
   port: 8000,
@@ -17,14 +29,19 @@ const options = {
 };
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
+const userRepository = new UserRepositoryPostgres();
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
 
-const userRepository = new UserRepositoryInMemory();
+const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
+const concessionController = new ConcessionController(concessionRepositoryPostgres);
+
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
+const brandRepository = new BrandRepositoryPostgres();
+const modelRepository = new ModelRepositoryPostgres();
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
@@ -37,11 +54,16 @@ const authentificationUsecase = new AuthentificationUsecase(
   tokenService
 );
 
-const authentificationController = new AuthentificationController(
-  authentificationUsecase
+const authentificationController = new AuthentificationController(authentificationUsecase);
+
+const motorcycleController = new MotorcycleController(
+    motorcycleRepository,
+    brandRepository,
+    modelRepository
 );
 
-const motorcycleController = new MotorcycleController(motorcycleRepository);
+const motorcycleBrandController = new MotorcycleBrandController(brandRepository);
+const motorcycleModelController = new MotorcycleModelController(modelRepository);
 
 const handler = async (request: Request): Promise<Response> => {
   try {
@@ -116,13 +138,47 @@ const handler = async (request: Request): Promise<Response> => {
       }
     }
 
-    if (url.pathname === "/auth/signin") {
-      if (request.method === "POST") {
-        response = await authentificationController.login(request);
-      } else {
-        response = new Response("Method not allowed", { status: 405 });
-      }
+    if (url.pathname.startsWith("/concessions")) {
+        const hasParameter = url.pathname.split("/").length > 2;
+        if (request.method === "GET") {
+            response = hasParameter
+                ? await concessionController.getConcessionById(request)
+                : await concessionController.listConcessions();
+        }
+
+        if (request.method === "POST") {
+            response = await concessionController.createConcession(request);
+        }
+
+        if (request.method === "PUT") {
+            response = await concessionController.updateConcession(request);
+        }
+
+        if (request.method === "DELETE") {
+          response = await concessionController.deleteConcession(request);
+        }
     }
+
+    if (url.pathname === "/auth/signin") {
+          if (request.method === "POST") {
+              response = await authentificationController.login(request);
+          }
+      }
+
+    if (url.pathname === "/motorcycle-brand") {
+          if (request.method === "GET") {
+              response = await motorcycleBrandController.listMotorcyclesBrand(request);
+          }
+      }
+
+    if (url.pathname === "/motorcycle-models") {
+          if (request.method === "GET") {
+              response = await motorcycleModelController.listMotorcyclesModels(request);
+          }
+          if (request.method === "POST") {
+              response = await motorcycleModelController.createMotorcycleModel(request);
+          }
+      }
 
     if (!response) {
         response = new Response("Not found", { status: 404 });

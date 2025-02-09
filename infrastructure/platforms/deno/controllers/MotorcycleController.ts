@@ -1,9 +1,6 @@
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository";
-import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres";
 import { createMotorcycleRequestSchema } from "../schemas/motorcycle/createMotorcycleRequestSchema";
 import {MotorcycleEntity} from "../../../../domain/entities/MotorcycleEntity";
-import {deleteClientRequestSchema} from "../schemas/client/deleteClientRequestSchema";
-import {DeleteClientUsecase} from "../../../../application/usecases/client/DeleteClientUsecase";
 import {DeleteMotorcycleUsecase} from "../../../../application/usecases/motorcycle/DeleteMotorcycleUsecase";
 import {deleteMotorcycleRequestSchema} from "../schemas/motorcycle/deleteMotorcycleRequestSchema";
 

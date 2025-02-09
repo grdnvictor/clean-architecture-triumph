@@ -8,18 +8,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {useRequireAuth} from "@/hooks/useRequireAuth";
 
-export default function CreateMotorcyclePage() {
+export default function CreateConcessionPage() {
     // const authChecked = useRequireAuth();
     //
     // if (!authChecked) {
     //     return null;
     // }
-
     const [formData, setFormData] = useState({
-        vin: "",
-        modelId: "",
-        concessionId: "",
-        currentMileage: ""
+        name: "",
+        siret: "",
+        phoneNumber: "",
+        address: "",
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -32,24 +31,18 @@ export default function CreateMotorcyclePage() {
         e.preventDefault();
         setLoading(true);
 
-        // Convertir le kilométrage en nombre avant l'envoi
-        const payload = {
-            ...formData,
-            currentMileage: Number(formData.currentMileage)
-        };
-
         try {
-            const response = await fetch("http://localhost:8000/motorcycles", {
+            const response = await fetch("http://localhost:8000/concessions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(formData),
             });
 
             if (!response.ok) {
-                throw new Error("Erreur lors de la création de la moto");
+                throw new Error("Erreur lors de la création de la concession");
             }
 
-            router.push("/motorcycles");
+            router.push("/concessions");
         } catch (error) {
             console.error(error);
         } finally {
@@ -61,47 +54,46 @@ export default function CreateMotorcyclePage() {
         <div className="container mx-auto p-6 grid place-items-center h-full w-full">
             <Card className="mx-auto w-[400px]">
                 <CardHeader>
-                    <CardTitle>Créer une Moto</CardTitle>
+                    <CardTitle>Créer une Concession</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <Label htmlFor="vin">VIN</Label>
+                            <Label htmlFor="name">Nom</Label>
                             <Input
-                                id="vin"
-                                name="vin"
-                                value={formData.vin}
+                                id="name"
+                                name="name"
+                                value={formData.name}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                         <div>
-                            <Label htmlFor="modelId">ID Modèle</Label>
+                            <Label htmlFor="siret">Siret</Label>
                             <Input
-                                id="modelId"
-                                name="modelId"
-                                value={formData.modelId}
+                                id="siret"
+                                name="siret"
+                                value={formData.siret}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                         <div>
-                            <Label htmlFor="concessionId">ID Concession</Label>
+                            <Label htmlFor="phoneNumber">Téléphone</Label>
                             <Input
-                                id="concessionId"
-                                name="concessionId"
-                                value={formData.concessionId}
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                value={formData.phoneNumber}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                         <div>
-                            <Label htmlFor="currentMileage">Kilométrage Actuel</Label>
+                            <Label htmlFor="address">Adresse</Label>
                             <Input
-                                type="number"
-                                id="currentMileage"
-                                name="currentMileage"
-                                value={formData.currentMileage}
+                                id="address"
+                                name="address"
+                                value={formData.address}
                                 onChange={handleChange}
                                 required
                             />

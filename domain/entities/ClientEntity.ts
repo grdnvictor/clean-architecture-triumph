@@ -1,5 +1,5 @@
-import {Firstname} from "../types/Firstname.ts";
-import {Lastname} from "../types/Lastname.ts";
+import {Firstname} from "../types/Firstname";
+import {Lastname} from "../types/Lastname";
 
 export class ClientEntity {
     private constructor(

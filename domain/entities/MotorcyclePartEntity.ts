@@ -8,11 +8,7 @@ export class MotorcyclePartEntity {
         public readonly updatedAt: Date,
     ) {}
 
-    public static create(
-        motorcycleId: string,
-        partId: string,
-        quantity: number
-    ) {
+    public static create(motorcycleId: string, partId: string, quantity: number) {
         return new MotorcyclePartEntity(
             crypto.randomUUID(),
             motorcycleId,

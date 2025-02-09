@@ -14,6 +14,7 @@ import {
     MotorcycleModelController,
     ConcessionController,
     TrialController
+    PartController
 } from "./controllers/index.ts";
 
 import {
@@ -24,6 +25,7 @@ import {
     ModelRepositoryPostgres,
     ClientRepositoryPostgres,
     TrialRepositoryPostgres
+    PartRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
 
 
@@ -37,8 +39,9 @@ const userRepository = new UserRepositoryPostgres();
 const motorcycleRepositoryPostgres = new MotorcycleRepositoryPostgres();
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const partRepositoryPostgres = new PartRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
-
+const partController = new PartController(partRepositoryPostgres);
 const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
 const concessionController = new ConcessionController(concessionRepositoryPostgres);
 
@@ -107,6 +110,27 @@ const handler = async (request: Request): Promise<Response> => {
         response = new Response("Method not allowed", { status: 405 });
       }
     }
+
+      if (url.pathname.startsWith("/parts")) {
+          const hasParameter = url.pathname.split("/").length > 2;
+          if (request.method === "GET") {
+              response = hasParameter
+                  ? await partController.getPartById(request)
+                  : await partController.listParts(request);
+          }
+
+          if (request.method === "POST") {
+              response = await partController.createPart(request);
+          }
+
+          if (request.method === "PUT") {
+              response = await partController.updatePart(request);
+          }
+
+          if (request.method === "DELETE") {
+              response = await partController.deletePart(request);
+          }
+      }
 
     if (url.pathname === "/motorcycles") {
       if (request.method === "GET") {

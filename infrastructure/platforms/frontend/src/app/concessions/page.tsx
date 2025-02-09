@@ -14,33 +14,33 @@ import Link from "next/link";
 import { Trash } from "lucide-react";
 import {useRequireAuth} from "@/hooks/useRequireAuth";
 
-export default function ClientsPage() {
+export default function ConcessionsPage() {
     // const authChecked = useRequireAuth();
     //
     // if (!authChecked) {
     //     return null;
     // }
-    const [clients, setClients] = useState([]);
+    const [concessions, setConcessions] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/clients")
+        fetch("http://localhost:8000/concessions")
             .then((response) => response.json())
-            .then((data) => setClients(data))
+            .then((data) => setConcessions(data))
             .catch((error) =>
-                console.error("Erreur lors de la récupération des clients :", error)
+                console.error("Erreur lors de la récupération des concessions :", error)
             );
     }, []);
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/clients/${id}`, {
+            const response = await fetch(`http://localhost:8000/concessions/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) {
-                throw new Error("Erreur lors de la suppression du client");
+                throw new Error("Erreur lors de la suppression de la concession");
             }
-            setClients((prevClients) =>
-                prevClients.filter((client) => client.id !== id)
+            setConcessions((prevConcessions) =>
+                prevConcessions.filter((concession) => concession.id !== id)
             );
         } catch (error) {
             console.error(error);
@@ -49,36 +49,38 @@ export default function ClientsPage() {
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">Liste des Clients</h1>
+            <h1 className="text-3xl font-bold mb-6">Liste des Concessions</h1>
             <div className="w-full overflow-x-auto">
                 <Table className="w-full">
                     <TableHeader>
                         <TableRow>
                             <TableHead>ID</TableHead>
-                            <TableHead>Prénom</TableHead>
                             <TableHead>Nom</TableHead>
-                            <TableHead>User ID</TableHead>
+                            <TableHead>Adresse</TableHead>
+                            <TableHead>Siret</TableHead>
+                            <TableHead>Téléphone</TableHead>
                             <TableHead>Créé le</TableHead>
                             <TableHead>Mis à jour le</TableHead>
                             <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {clients.map((client) => (
-                            <TableRow key={client.id}>
-                                <TableCell>{client.id}</TableCell>
-                                <TableCell>{client.firstname}</TableCell>
-                                <TableCell>{client.lastname}</TableCell>
-                                <TableCell>{client.userid}</TableCell>
+                        {concessions.map((concession) => (
+                            <TableRow key={concession.id}>
+                                <TableCell>{concession.id}</TableCell>
+                                <TableCell>{concession.name}</TableCell>
+                                <TableCell>{concession.address}</TableCell>
+                                <TableCell>{concession.siret}</TableCell>
+                                <TableCell>{concession.phonenumber}</TableCell>
                                 <TableCell>
-                                    {new Date(client.createdat).toLocaleDateString()}
+                                    {new Date(concession.createdat).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell>
-                                    {new Date(client.updatedat).toLocaleDateString()}
+                                    {new Date(concession.updatedat).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell>
                                     <Trash
-                                        onClick={() => handleDelete(client.id)}
+                                        onClick={() => handleDelete(concession.id)}
                                         className="text-red-500 w-4 h-4 cursor-pointer"
                                     />
                                 </TableCell>
@@ -89,7 +91,7 @@ export default function ClientsPage() {
             </div>
             <div className="mt-8">
                 <Button>
-                    <Link href="/clients/create">Ajouter un client</Link>
+                    <Link href="/concessions/create">Ajouter une concession</Link>
                 </Button>
             </div>
         </div>

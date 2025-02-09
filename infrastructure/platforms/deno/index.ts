@@ -1,13 +1,18 @@
+
 import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
 import { MotorcycleRepositoryPostgres } from "../../adapters/repositories/MotorcycleRepositoryPostgres";
 import { AppointmentController } from "./controllers/AppointmentController";
 import { MotorcycleController } from "./controllers/MotorcycleController";
 import {AuthentificationController} from "./controllers/AuthentificationController";
-import { UserRepositoryInMemory } from "../../adapters/repositories/UserRepositoryInMemory";
+import { UserRepositoryPg } from "../../adapters/repositories/UserRepositoryPg";
 import {AuthentificationUsecase} from "../../../application/usecases/AuthentificationUsecase";
 import {TokenService} from "../../services/TokenService";
 import {PasswordService} from "../../services/PasswordService";
 import * as process from "node:process";
+import {BrandRepositoryPostgres} from "../../adapters/repositories/BrandRepositoryPostgres.ts";
+import {ModelRepositoryPostgres} from "../../adapters/repositories/ModelRepositoryPostgres.ts";
+import {MotorcycleBrandController} from "./controllers/MotorcycleBrandController";
+import {MotorcycleModelController} from "./controllers/MotorcycleModelController";
 import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
 import {ClientController} from "./controllers/ClientController.ts";
 
@@ -17,14 +22,16 @@ const options = {
 };
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
+const userRepository = new UserRepositoryPg();
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
 
-const userRepository = new UserRepositoryInMemory();
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
+const brandRepository = new BrandRepositoryPostgres();
+const modelRepository = new ModelRepositoryPostgres();
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
@@ -37,11 +44,19 @@ const authentificationUsecase = new AuthentificationUsecase(
   tokenService
 );
 
-const authentificationController = new AuthentificationController(
-  authentificationUsecase
-);
+const authentificationController = new AuthentificationController(authentificationUsecase);
 
-const motorcycleController = new MotorcycleController(motorcycleRepository);
+const motorcycleController = new MotorcycleController(
+    motorcycleRepository,
+    brandRepository,
+    modelRepository
+);
+/*const scheduleRepository = new ScheduleRepositoryPg();
+const scheduleController = new ScheduleController(scheduleRepository);
+*/
+
+const motorcycleBrandController = new MotorcycleBrandController(brandRepository);
+const motorcycleModelController = new MotorcycleModelController(modelRepository);
 
 const handler = async (request: Request): Promise<Response> => {
   try {
@@ -106,12 +121,25 @@ const handler = async (request: Request): Promise<Response> => {
     }
 
     if (url.pathname === "/auth/signin") {
-      if (request.method === "POST") {
-        response = await authentificationController.login(request);
-      } else {
-        response = new Response("Method not allowed", { status: 405 });
+          if (request.method === "POST") {
+              response = await authentificationController.login(request);
+          }
       }
-    }
+
+    if (url.pathname === "/motorcycle-brand") {
+          if (request.method === "GET") {
+              response = await motorcycleBrandController.listMotorcyclesBrand(request);
+          }
+      }
+
+    if (url.pathname === "/motorcycle-models") {
+          if (request.method === "GET") {
+              response = await motorcycleModelController.listMotorcyclesModels(request);
+          }
+          if (request.method === "POST") {
+              response = await motorcycleModelController.createMotorcycleModel(request);
+          }
+      }
 
     if (!response) {
         response = new Response("Not found", { status: 404 });
@@ -129,3 +157,12 @@ const handler = async (request: Request): Promise<Response> => {
 Deno.serve(options, handler);
 
 console.log(`Server running on http://${options.host}:${options.port}`);
+/*
+else if (url.pathname.startsWith("/motorcycle-models/")) {
+        const brandId = url.pathname.split("/")[2];
+        if (request.method === "GET") {
+            response = await motorcycleModelController.listMotorcycleByModels(request,brandId);
+        } else {
+            response = new Response("Method not allowed", { status: 405 });
+        }
+ */

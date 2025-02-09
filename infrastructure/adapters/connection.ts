@@ -6,7 +6,7 @@ export class DatabaseConnection {
 
     private constructor() {
         const databaseUrl = Deno.env.get("DATABASE_URL");
-
+        console.log("databaseUrl", databaseUrl);
         if (!databaseUrl) {
             throw new Error("DATABASE_URL environment variable is not set");
         }
@@ -15,12 +15,14 @@ export class DatabaseConnection {
     }
 
     public static getInstance(): DatabaseConnection {
-        if (!DatabaseConnection.instance) {
-            console.log("Creating new database connection");
-            DatabaseConnection.instance = new DatabaseConnection();
+        return new DatabaseConnection();
 
-        }
-        return DatabaseConnection.instance;
+        // TODO: voir comment gérer les requêtes concurrentes
+        // if (!DatabaseConnection.instance) {
+        //     console.log("Creating new database connection");
+        //     DatabaseConnection.instance = new DatabaseConnection();
+        // }
+        // return DatabaseConnection.instance;
     }
 
     public async connect() {

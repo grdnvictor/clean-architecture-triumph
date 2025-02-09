@@ -10,7 +10,6 @@ export interface ConcessionRepository {
         limit?: number;
         offset?: number;
     }): Promise<ConcessionEntity[]>;
-    motorcycleExistsInConcession(id: string, concessionId: string): Promise<boolean>;
     findOneById(id: string): Promise<ConcessionEntity | null>;
     update(id: string, updatedData: Partial<ConcessionEntity>): Promise<void>;
     delete(id: string): Promise<void>;

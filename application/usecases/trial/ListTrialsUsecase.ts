@@ -1,11 +1,11 @@
-import {ClientRepository} from "../../repositories/ClientRepository.ts";
+import {TrialRepository} from "../../repositories/TrialRepository.ts";
 
 export class ListTrialsUsecase {
     public constructor(
-        private readonly clientRepository: ClientRepository,
+        private readonly trialRepository: TrialRepository,
     ) {}
 
-    public execute() {
-        return this.clientRepository.all();
+    public execute(concessionId: string) {
+        return this.trialRepository.all(concessionId);
     }
 }

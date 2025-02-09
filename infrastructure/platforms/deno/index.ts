@@ -12,7 +12,8 @@ import {
     AuthentificationController,
     MotorcycleBrandController,
     MotorcycleModelController,
-    ConcessionController
+    ConcessionController,
+    TrialController
 } from "./controllers/index.ts";
 
 import {
@@ -21,7 +22,8 @@ import {
     UserRepositoryPostgres,
     BrandRepositoryPostgres,
     ModelRepositoryPostgres,
-    ClientRepositoryPostgres
+    ClientRepositoryPostgres,
+    TrialRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
 
 
@@ -32,13 +34,21 @@ const options = {
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
 const userRepository = new UserRepositoryPostgres();
-const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
+const motorcycleRepositoryPostgres = new MotorcycleRepositoryPostgres();
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
 
 const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
 const concessionController = new ConcessionController(concessionRepositoryPostgres);
+
+const trialRepositoryPostgres = new TrialRepositoryPostgres();
+const trialController = new TrialController(
+    trialRepositoryPostgres,
+    clientRepositoryPostgres,
+    concessionRepositoryPostgres,
+    motorcycleRepositoryPostgres
+);
 
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
@@ -47,7 +57,7 @@ const modelRepository = new ModelRepositoryPostgres();
 
 const appointmentController = new AppointmentController(
   appointmentRepository,
-  motorcycleRepository,
+  motorcycleRepositoryPostgres,
 );
 
 const authentificationUsecase = new AuthentificationUsecase(
@@ -59,7 +69,7 @@ const authentificationUsecase = new AuthentificationUsecase(
 const authentificationController = new AuthentificationController(authentificationUsecase);
 
 const motorcycleController = new MotorcycleController(
-    motorcycleRepository,
+    motorcycleRepositoryPostgres,
     brandRepository,
     modelRepository
 );
@@ -150,6 +160,29 @@ const handler = async (request: Request): Promise<Response> => {
         }
     }
 
+    if (url.pathname.startsWith("/trials")) {
+          const pathParts = url.pathname.split("/");
+          const hasConcessionAndTrialId = pathParts.length > 3;
+
+          if (request.method === "GET") {
+              response = hasConcessionAndTrialId
+                  ? await trialController.getTrialById(request)
+                  : await trialController.listTrials(request);
+          }
+
+          if (request.method === "POST") {
+              response = await trialController.createTrial(request);
+          }
+
+          if (request.method === "PUT") {
+              response = await trialController.updateTrial(request);
+          }
+
+          if (request.method === "DELETE") {
+              response = await trialController.deleteTrial(request);
+          }
+    }
+
     if (url.pathname === "/auth/signin") {
           if (request.method === "POST") {
               response = await authentificationController.login(request);
@@ -163,13 +196,13 @@ const handler = async (request: Request): Promise<Response> => {
       }
 
     if (url.pathname === "/motorcycle-models") {
-          if (request.method === "GET") {
-              response = await motorcycleModelController.listMotorcyclesModels(request);
-          }
-          if (request.method === "POST") {
-              response = await motorcycleModelController.createMotorcycleModel(request);
-          }
-      }
+        if (request.method === "GET") {
+            response = await motorcycleModelController.listMotorcyclesModels(request);
+        }
+        if (request.method === "POST") {
+            response = await motorcycleModelController.createMotorcycleModel(request);
+        }
+    }
 
     if (!response) {
         response = new Response("Not found", { status: 404 });

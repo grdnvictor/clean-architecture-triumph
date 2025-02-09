@@ -2,7 +2,7 @@ import type { TrialEntity } from "../../domain/entities/TrialEntity.ts";
 
 export interface TrialRepository {
     save(client: TrialEntity ): Promise<void>;
-    all(): Promise<TrialEntity[]>;
+    all(consessionId: string): Promise<TrialEntity[]>;
     findByOption(options: {
         where?: Record<string, any>;
         select?: string[];

@@ -5,12 +5,14 @@ import { TrialEntity } from "../../../domain/entities/TrialEntity.ts";
 import { TrialNotFoundError } from "../../../domain/errors/TrialNotFoundError.ts";
 import { ClientNotFoundInConcessionError } from "../../../domain/errors/ClientNotFoundInConcessionError.ts";
 import {MotorcycleNotFoundInConcessionError} from "../../../domain/errors/MotorcycleNotFoundInConcessionError.ts";
+import {MotorcycleRepository} from "../../repositories/MotorcycleRepository.ts";
 
 export class UpdateTrialUsecase {
     constructor(
         private readonly trialRepository: TrialRepository,
         private readonly clientRepository: ClientRepository,
-        private readonly concessionRepository: ConcessionRepository
+        private readonly concessionRepository: ConcessionRepository,
+        private readonly motorcycleRepository: MotorcycleRepository
     ) {}
 
     public async execute(
@@ -48,7 +50,7 @@ export class UpdateTrialUsecase {
         }
 
         if (motorcycleId) {
-            const motorcycleExists = await this.concessionRepository.motorcycleExistsInConcession(motorcycleId, trial.concessionId);
+            const motorcycleExists = await this.motorcycleRepository.existsInConcession(motorcycleId, trial.concessionId);
             if (!motorcycleExists) {
                 return new MotorcycleNotFoundInConcessionError();
             }

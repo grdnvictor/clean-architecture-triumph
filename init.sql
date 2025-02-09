@@ -1,17 +1,29 @@
 -- USERS TABLE # password is 'hashedpassword123'
 CREATE TABLE users (
+   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+   email VARCHAR(255) NOT NULL,
+   password VARCHAR(255) NOT NULL,
+   isAdmin BOOLEAN DEFAULT FALSE,
+   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (email, password, isAdmin, createdAt, updatedAt) VALUES
+   ('admin@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', TRUE, NOW(), NOW()),
+   ('user1@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', FALSE, NOW(), NOW()),
+   ('user2@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', FALSE, NOW(), NOW());
+
+-- CLIENT TABLE
+CREATE TABLE client (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    isAdmin BOOLEAN DEFAULT FALSE,
+    firstName VARCHAR(255) NOT NULL,
+    lastName VARCHAR(255) NOT NULL,
+    concessionId UUID NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (email, password, isAdmin, createdAt, updatedAt) VALUES
-    ('admin@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', TRUE, NOW(), NOW()),
-    ('user1@example.com', 'hashedpassword456', FALSE, NOW(), NOW()),
-    ('user2@example.com', 'hashedpassword789', FALSE, NOW(), NOW());
+-- FK CONSTRAINT FOR concessionId to be made
 
 -- MOTORCYCLES TABLE
 CREATE TABLE motorcycle (

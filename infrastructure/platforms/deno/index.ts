@@ -1,5 +1,6 @@
-import { AppointmentRepositoryInMemory } from "../../adapters/repositories/inMemory/AppointmentRepositoryInMemory";
-import { MotorcycleRepositoryInMemory } from "../../adapters/repositories/inMemory/MotorcycleRepositoryInMemory";
+
+import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
+import { MotorcycleRepositoryPostgres } from "../../adapters/repositories/MotorcycleRepositoryPostgres";
 import { AppointmentController } from "./controllers/AppointmentController";
 import { MotorcycleController } from "./controllers/MotorcycleController";
 import {AuthentificationController} from "./controllers/AuthentificationController";
@@ -12,6 +13,8 @@ import {BrandRepositoryPostgres} from "../../adapters/repositories/BrandReposito
 import {ModelRepositoryPostgres} from "../../adapters/repositories/ModelRepositoryPostgres.ts";
 import {MotorcycleBrandController} from "./controllers/MotorcycleBrandController";
 import {MotorcycleModelController} from "./controllers/MotorcycleModelController";
+import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
+import {ClientController} from "./controllers/ClientController.ts";
 
 const options = {
   port: 8000,
@@ -19,8 +22,12 @@ const options = {
 };
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
-const motorcycleRepository = new MotorcycleRepositoryInMemory([]);
 const userRepository = new UserRepositoryPg();
+const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
+
+const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const clientController = new ClientController(clientRepositoryPostgres);
+
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
 const brandRepository = new BrandRepositoryPostgres();
@@ -56,12 +63,13 @@ const handler = async (request: Request): Promise<Response> => {
     const url = new URL(request.url);
     const options = {
         headers: {
-            "Access-Control-Allow-Origin": Deno.env.get("FRONTEND_URL"),
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE",
             "Access-Control-Allow-Headers": "Content-Type, Authorization",
             "Access-Control-Allow-Credentials": "true",
         },
     }
+
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -69,6 +77,7 @@ const handler = async (request: Request): Promise<Response> => {
       });
     }
     let response: Response;
+
 
     if (url.pathname === "/appointments") {
       if (request.method === "GET") {
@@ -78,7 +87,9 @@ const handler = async (request: Request): Promise<Response> => {
       } else {
         response = new Response("Method not allowed", { status: 405 });
       }
-    } else if (url.pathname === "/motorcycles") {
+    }
+
+    if (url.pathname === "/motorcycles") {
       if (request.method === "GET") {
         response = await motorcycleController.listMotorcycles(request);
       } else if (request.method === "POST") {
@@ -86,30 +97,52 @@ const handler = async (request: Request): Promise<Response> => {
       } else {
         response = new Response("Method not allowed", { status: 405 });
       }
-    } else if (url.pathname === "/auth/signin") {
-      if (request.method === "POST") {
-        response = await authentificationController.login(request);
-      } else {
-        response = new Response("Method not allowed", { status: 405 });
-      }
-    } else if(url.pathname === "/motorcycle-brand") {
-        if (request.method === "GET") {
-            response = await motorcycleBrandController.listMotorcyclesBrand(request);
-            console.log(response);
-        } else {
-            response = new Response("Method not allowed", { status: 405 });
-        }
-    } else if (url.pathname === "/motorcycle-models") {
-        if (request.method === "GET") {
-            response = await motorcycleModelController.listMotorcyclesModels(request);
-        }else if (request.method === "POST") {
-            console.log("create motorcycle model");
-            response = await motorcycleModelController.createMotorcycleModel(request);
-        } else {
-            response = new Response("Method not allowed", { status: 405 });
     }
-    }else {
-      response = new Response("Not found", { status: 404 });
+
+    if (url.pathname.startsWith("/clients")) {
+      const hasParameter = url.pathname.split("/").length > 2;
+      if (request.method === "GET") {
+        response = hasParameter
+            ? await clientController.getClientById(request)
+            : await clientController.listClients(request);
+      }
+
+      if (request.method === "POST") {
+        response = await clientController.createClient(request);
+      }
+
+      if (request.method === "PUT") {
+        response = await clientController.updateClient(request);
+      }
+
+      if (request.method === "DELETE") {
+        response = await clientController.deleteClient(request);
+      }
+    }
+
+    if (url.pathname === "/auth/signin") {
+          if (request.method === "POST") {
+              response = await authentificationController.login(request);
+          }
+      }
+
+    if (url.pathname === "/motorcycle-brand") {
+          if (request.method === "GET") {
+              response = await motorcycleBrandController.listMotorcyclesBrand(request);
+          }
+      }
+
+    if (url.pathname === "/motorcycle-models") {
+          if (request.method === "GET") {
+              response = await motorcycleModelController.listMotorcyclesModels(request);
+          }
+          if (request.method === "POST") {
+              response = await motorcycleModelController.createMotorcycleModel(request);
+          }
+      }
+
+    if (!response) {
+        response = new Response("Not found", { status: 404 });
     }
 
     return new Response(response.body, {

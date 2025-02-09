@@ -1,6 +1,6 @@
 
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository";
-import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/MotorcycleRepositoryPostgres";
+import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/postgresql/index.ts";
 import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema";
 import {MotorcycleEntity} from "../../../../domain/entities/MotorcycleEntity";
 

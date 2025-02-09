@@ -1,9 +1,9 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
-import {DatabaseConnection} from "../connection";
-import {UserRepository} from "../../../application/repositories/UserRepository";
-import {UserEntity} from "../../../domain/entities/UserEntity";
+import {DatabaseConnection} from "../../connection.ts";
+import {UserRepository} from "../../../../application/repositories/UserRepository.ts";
+import {UserEntity} from "../../../../domain/entities/UserEntity.ts";
 
-export class UserRepositoryPg implements UserRepository {
+export class UserRepositoryPostgres implements UserRepository {
     private client: Client;
     private tableName: string;
 

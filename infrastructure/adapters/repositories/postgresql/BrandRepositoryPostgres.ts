@@ -1,7 +1,7 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
-import {DatabaseConnection} from "../connection.ts";
-import {BrandRepository} from "../../../application/repositories/BrandRepository.ts";
-import {BrandEntity} from "../../../domain/entities/BrandEntity.ts";
+import {DatabaseConnection} from "../../connection.ts";
+import {BrandRepository} from "../../../../application/repositories/BrandRepository.ts";
+import {BrandEntity} from "../../../../domain/entities/BrandEntity.ts";
 
 export class BrandRepositoryPostgres implements BrandRepository {
     private client: Client;

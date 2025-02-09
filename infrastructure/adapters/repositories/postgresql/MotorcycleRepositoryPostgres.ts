@@ -12,8 +12,6 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
 
   public async save(motorcycle: MotorcycleEntity): Promise<void> {
 
-    // return new reponse of motorcycleEntity
-
     await this.client.queryArray(
         "INSERT INTO motorcycle (id, vin, modelId, concessionId, currentMileage, createdAt, updatedAt) VALUES ($IDENTIFIER, $VIN, $MODELID, $CONCESSIONID, $CURRENTMILEAGE, $CREATED_AT, $UPDATED_AT)",
         {
@@ -52,9 +50,11 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
     );
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.client.queryArray("DELETE FROM motorcycle WHERE id = $1", id);
-  }
+    public async delete(id: string): Promise<void> {
+        await this.client.queryArray("DELETE FROM motorcycle WHERE id = $MOTORCYCLE", {
+            MOTORCYCLE: id
+        });
+    }
 
   public async getMotorcycleById(id: string): Promise<MotorcycleEntity | null> {
     const result = await this.client.queryObject<MotorcycleEntity>(

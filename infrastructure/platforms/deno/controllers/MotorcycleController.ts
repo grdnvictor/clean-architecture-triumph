@@ -1,30 +1,15 @@
-
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository";
-import { MotorcycleRepositoryPostgres } from "../../../adapters/repositories/postgresql/index.ts";
 import { createMotorcycleRequestSchema } from "../schemas/createMotorcycleRequestSchema";
-import {MotorcycleEntity} from "../../../../domain/entities/MotorcycleEntity";
+import { MotorcycleEntity } from "../../../../domain/entities/MotorcycleEntity";
+import { DeleteMotorcycleUsecase } from "../../../../application/usecases/motorcycle/DeletMotorcycleUsecase";
+import { deleteMotorcycleRequestSchema } from "../schemas/motorcycle/deleteMotorcycleRequestSchema";
 
 export class MotorcycleController {
-  private repository: MotorcycleRepository;
-
-  constructor() {
-    this.repository = new MotorcycleRepositoryPostgres();
-  }
+  constructor(private readonly repository: MotorcycleRepository) {}
 
   public async listMotorcycles(_: Request): Promise<Response> {
     const motorcycles = await this.repository.all();
     return new Response(JSON.stringify(motorcycles), { headers: { "Content-Type": "application/json" } });
-  }
-
-  public async getMotorcycleById(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const id = url.pathname.split("/").pop();
-    if (!id) return new Response("Missing ID", { status: 400 });
-
-    const motorcycle = await this.repository.findOneById(id);
-    if (!motorcycle) return new Response("Motorcycle not found", { status: 404 });
-
-    return new Response(JSON.stringify(motorcycle), { headers: { "Content-Type": "application/json" } });
   }
 
   public async createMotorcycle(request: Request): Promise<Response> {
@@ -41,22 +26,18 @@ export class MotorcycleController {
     return new Response(null, { status: 201 });
   }
 
-  public async updateMotorcycle(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const id = url.pathname.split("/").pop();
-    if (!id) return new Response("Missing ID", { status: 400 });
-
-    const body = await request.json();
-    await this.repository.update(id, body);
-    return new Response("Updated successfully", { status: 200 });
-  }
-
   public async deleteMotorcycle(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
     if (!id) return new Response("Missing ID", { status: 400 });
 
-    await this.repository.delete(id);
-    return new Response("Deleted successfully", { status: 200 });
+    const validation = deleteMotorcycleRequestSchema.safeParse({ id });
+    if (!validation.success) {
+      return new Response("Invalid ID format", { status: 400 });
+    }
+
+    const deleteMotorcycleUsecase = new DeleteMotorcycleUsecase(this.repository);
+    await deleteMotorcycleUsecase.execute(id);
+    return new Response(null, { status: 200 });
   }
 }

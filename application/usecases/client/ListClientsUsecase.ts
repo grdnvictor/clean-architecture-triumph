@@ -1,4 +1,4 @@
-import {ClientRepository} from "../../repositories/ClientRepository.ts";
+import {ClientRepository} from "../../repositories/ClientRepository";
 
 export class ListClientsUsecase {
     public constructor(

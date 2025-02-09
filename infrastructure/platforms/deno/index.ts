@@ -23,6 +23,10 @@ import {
     ModelRepositoryPostgres,
     ClientRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
+import {ClientMotorcycleController} from "./controllers/ClientMotorcycleController.ts";
+import {
+    ClientMotorcycleRepositoryPostgres
+} from "../../adapters/repositories/postgresql/ClientMotorcycleRepositoryPostgres.ts";
 
 
 const options = {
@@ -35,6 +39,7 @@ const userRepository = new UserRepositoryPostgres();
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const clientMotorcycleRepositoryPostgres = new ClientMotorcycleRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
 
 const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
@@ -63,6 +68,8 @@ const motorcycleController = new MotorcycleController(
     brandRepository,
     modelRepository
 );
+
+const clientMotorcycleController = new ClientMotorcycleController(clientMotorcycleRepositoryPostgres);
 
 const motorcycleBrandController = new MotorcycleBrandController(brandRepository);
 const motorcycleModelController = new MotorcycleModelController(modelRepository);
@@ -176,6 +183,12 @@ const handler = async (request: Request): Promise<Response> => {
         if (request.method === "POST") {
             response =  await clientController.getClientByPhone(request);
         }
+    }
+    if (url.pathname.startsWith("/client/motorcycles/")) {
+        if (request.method === "GET") {
+            response =  await clientMotorcycleController.getClientMotorcycles(request);
+        }
+
     }
     if (url.pathname === "/maintenance-planning") {
         if (request.method === "GET") {

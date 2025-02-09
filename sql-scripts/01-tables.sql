@@ -37,6 +37,17 @@ CREATE TABLE motorcycle (
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE client_motorcycle (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    vin VARCHAR(255) NOT NULL,
+    model_id  UUID NOT NULL,
+    client_id UUID NOT NULL,
+    motorcycle_id UUID NOT NULL,
+    currentMileage INTEGER DEFAULT 0,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE brand (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL

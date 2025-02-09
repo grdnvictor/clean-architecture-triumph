@@ -26,6 +26,7 @@ export class MotorcycleController {
     return new Response(null, { status: 201 });
   }
 
+
   public async deleteMotorcycle(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();

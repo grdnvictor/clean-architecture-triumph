@@ -4,13 +4,11 @@ INSERT INTO users (email, password, isAdmin, createdAt, updatedAt) VALUES
     ('user1@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', FALSE, NOW(), NOW()),
     ('user2@example.com', '$2y$10$/WEZLm0N0cNWYVs.LF7j8.3zR.5H7OBlObf7d1FmbTLhS.txKRxDC', FALSE, NOW(), NOW());
 
--- Insert records into the concession table
 INSERT INTO concession (id, name, address, siret, phoneNumber, createdAt, updatedAt) VALUES
     (gen_random_uuid(), 'Concession A', 'Address A', '123456789', '0123456789', NOW(), NOW()),
     (gen_random_uuid(), 'Concession B', 'Address B', '987654321', '0987654321', NOW(), NOW()),
     (gen_random_uuid(), 'Concession C', 'Address C', '123123123', '1231231234', NOW(), NOW());
 
--- Insert records into the client table using the IDs from the concession table
 INSERT INTO client (firstName, lastName, phone, concessionId, createdAt, updatedAt) VALUES
     ('John', 'Doe', '0623456789', (SELECT id FROM concession LIMIT 1 OFFSET 0), NOW(), NOW()),
     ('Jane', 'Smith', '0787654321', (SELECT id FROM concession LIMIT 1 OFFSET 1), NOW(), NOW()),
@@ -21,6 +19,10 @@ INSERT INTO motorcycle (vin, modelId, concessionId, currentMileage, createdAt, u
     ('2HGCM82633A654321', gen_random_uuid(), gen_random_uuid(), 5000, NOW(), NOW()),
     ('3HGCM82633A789012', gen_random_uuid(), gen_random_uuid(), 8000, NOW(), NOW());
 
+INSERT INTO client_motorcycle (id, vin, model_id, client_id, motorcycle_id, currentMileage, createdAt, updatedAt) VALUES
+                                                                                                                   (gen_random_uuid(), '1HGCM82633A004352', (SELECT id FROM model LIMIT 1 OFFSET 0), (SELECT id FROM client LIMIT 1 OFFSET 0), (SELECT id FROM motorcycle LIMIT 1 OFFSET 0), 10000, NOW(), NOW()),
+    (gen_random_uuid(), '2HGCM82633A004353', (SELECT id FROM model LIMIT 1 OFFSET 1), (SELECT id FROM client LIMIT 1 OFFSET 1), (SELECT id FROM motorcycle LIMIT 1 OFFSET 1), 15000, NOW(), NOW()),
+    (gen_random_uuid(), '3HGCM82633A004354', (SELECT id FROM model LIMIT 1 OFFSET 2), (SELECT id FROM client LIMIT 1 OFFSET 2), (SELECT id FROM motorcycle LIMIT 1 OFFSET 2), 20000, NOW(), NOW());
 
 INSERT INTO brand (name) VALUES
     ('Yamaha'),
@@ -35,17 +37,10 @@ INSERT INTO brand (name) VALUES
     ('Aprilia');
 
 
-INSERT INTO model (name, year, brand_id, description, maintenance_interval_km, maintenance_interval_months, created_at, updated_at) VALUES
-    ('YZF-R1', 2023, (SELECT id FROM brand WHERE name = 'Yamaha'), 'changer les filtres', 10000, 12, NOW(), NOW()),
-    ('CBR1000RR', 2023, (SELECT id FROM brand WHERE name = 'Honda'), 'vérifier les freins', 10000, 12, NOW(), NOW()),
-    ('GSX-R1000', 2023, (SELECT id FROM brand WHERE name = 'Suzuki'), 'changer l huile', 10000, 12, NOW(), NOW()),
-    ('Ninja ZX-10R', 2023, (SELECT id FROM brand WHERE name = 'Kawasaki'), 'vérifier la chaîne', 10000, 12, NOW(), NOW()),
-    ('Panigale V4', 2023, (SELECT id FROM brand WHERE name = 'Ducati'), 'vérifier les pneus', 10000, 12, NOW(), NOW()),
-    ('S1000RR', 2023, (SELECT id FROM brand WHERE name = 'BMW'), 'changer les bougies', 10000, 12, NOW(), NOW()),
-    ('Street Glide', 2023, (SELECT id FROM brand WHERE name = 'Harley-Davidson'), 'vérifier la batterie', 10000, 12, NOW(), NOW()),
-    ('Speed Triple 1200 RS', 2023, (SELECT id FROM brand WHERE name = 'Triumph'), 'vérifier les suspensions', 10000, 12, NOW(), NOW()),
-    ('1290 Super Duke R', 2023, (SELECT id FROM brand WHERE name = 'KTM'), 'vérifier le système de refroidissement', 10000, 12, NOW(), NOW()),
-    ('RSV4', 2023, (SELECT id FROM brand WHERE name = 'Aprilia'), 'vérifier l embrayage', 10000, 12, NOW(), NOW());
+INSERT INTO model (id, name, year, brand_id, description, maintenance_interval_km, maintenance_interval_months, created_at, updated_at) VALUES
+(gen_random_uuid(), 'YZF-R1', 2023, (SELECT id FROM brand WHERE name = 'Yamaha'), '{"maintenance": "changer les filtres"}', 10000, 12, NOW(), NOW()),
+(gen_random_uuid(), 'CBR1000RR', 2023, (SELECT id FROM brand WHERE name = 'Honda'), '{"maintenance": "vérifier les freins"}', 10000, 12, NOW(), NOW()),
+(gen_random_uuid(), 'GSX-R1000', 2023, (SELECT id FROM brand WHERE name = 'Suzuki'), '{"maintenance": "changer l huile"}', 10000, 12, NOW(), NOW());
 
 INSERT INTO part (name, reference, stock, minimumStock, createdAt, updatedAt) VALUES
     ('Brake Pad', 'BP123', 50, 10, NOW(), NOW()),

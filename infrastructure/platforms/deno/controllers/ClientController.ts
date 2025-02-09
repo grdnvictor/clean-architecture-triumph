@@ -1,6 +1,11 @@
 import type { ClientRepository } from "../../../../application/repositories/ClientRepository.ts";
-import { createClientRequestSchema } from "../schemas/client/createClientRequestSchema.ts";
-import { updateClientRequestSchema } from "../schemas/client/updateClientRequestSchema.ts";
+
+import {
+  createClientRequestSchema,
+  updateClientRequestSchema,
+  deleteClientRequestSchema,
+  getClientByIdRequestSchema
+} from "../schemas/client/index.ts";
 
 import {
   CreateClientUsecase,
@@ -9,9 +14,6 @@ import {
   UpdateClientUsecase,
   ListClientsUsecase
 } from "../../../../application/usecases/client/index.ts";
-
-import {deleteClientRequestSchema} from "../schemas/client/deleteClientRequestSchema.ts";
-import {getClientByIdRequestSchema} from "../schemas/client/getClientByIdRequestSchema.ts";
 
 export class ClientController {
   constructor(private readonly repository: ClientRepository) {}

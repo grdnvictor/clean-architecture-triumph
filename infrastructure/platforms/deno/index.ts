@@ -10,6 +10,8 @@ import {PasswordService} from "../../services/PasswordService";
 import * as process from "node:process";
 import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
 import {ClientController} from "./controllers/ClientController.ts";
+import {ConcessionRepositoryPostgres} from "../../adapters/repositories/ConcessionRepositoryPostgres.ts";
+import {ConcessionController} from "./controllers/ConcessionController.ts";
 
 const options = {
   port: 8000,
@@ -21,6 +23,9 @@ const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
+
+const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
+const concessionController = new ConcessionController(concessionRepositoryPostgres);
 
 const userRepository = new UserRepositoryInMemory();
 const passwordService = new PasswordService();
@@ -103,6 +108,27 @@ const handler = async (request: Request): Promise<Response> => {
       if (request.method === "DELETE") {
         response = await clientController.deleteClient(request);
       }
+    }
+
+    if (url.pathname.startsWith("/concessions")) {
+        const hasParameter = url.pathname.split("/").length > 2;
+        if (request.method === "GET") {
+            response = hasParameter
+                ? await concessionController.getConcessionById(request)
+                : await concessionController.listConcessions();
+        }
+
+        if (request.method === "POST") {
+            response = await concessionController.createConcession(request);
+        }
+
+        if (request.method === "PUT") {
+            response = await concessionController.updateConcession(request);
+        }
+
+        if (request.method === "DELETE") {
+          response = await concessionController.deleteConcession(request);
+        }
     }
 
     if (url.pathname === "/auth/signin") {

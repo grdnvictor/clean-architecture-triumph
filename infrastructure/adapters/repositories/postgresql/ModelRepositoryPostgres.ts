@@ -1,7 +1,7 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
-import {ModelRepository} from "../../../application/repositories/ModelRepository.ts";
-import {DatabaseConnection} from "../connection.ts";
-import {ModelEntity} from "../../../domain/entities/ModelEntity.ts";
+import {ModelRepository} from "../../../../application/repositories/ModelRepository.ts";
+import {DatabaseConnection} from "../../connection.ts";
+import {ModelEntity} from "../../../../domain/entities/ModelEntity.ts";
 
 export class ModelRepositoryPostgres implements ModelRepository{
     private client: Client;

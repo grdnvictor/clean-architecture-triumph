@@ -1,7 +1,7 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
-import { ConcessionEntity } from "../../../domain/entities/ConcessionEntity.ts";
-import { DatabaseConnection } from "../connection.ts";
-import { ConcessionRepository } from "../../../application/repositories/ConcessionRepository.ts";
+import { ConcessionEntity } from "../../../../domain/entities/ConcessionEntity.ts";
+import { DatabaseConnection } from "../../connection.ts";
+import { ConcessionRepository } from "../../../../application/repositories/ConcessionRepository.ts";
 
 export class ConcessionRepositoryPostgres implements ConcessionRepository {
     private client: Client;

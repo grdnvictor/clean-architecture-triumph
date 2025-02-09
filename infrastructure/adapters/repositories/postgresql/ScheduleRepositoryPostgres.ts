@@ -1,4 +1,6 @@
-export class ScheduleRepositoryPg implements ScheduleRepository {
+import { ScheduleRepository } from "../../../../application/repositories/ScheduleRepository.ts";
+
+export class ScheduleRepositoryPostgres implements ScheduleRepository {
     public async save(schedule: ScheduleEntity): Promise<void> {
         const client = new Client();
         await client.connect();

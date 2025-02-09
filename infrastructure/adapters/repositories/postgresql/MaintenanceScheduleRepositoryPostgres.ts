@@ -1,8 +1,8 @@
-import {DatabaseConnection} from "../connection";
-import {MaintenanceScheduleRepository} from "../../../application/repositories/MaintenanceScheduleRepository";
-import {IntervalEntity} from "../../../domain/entities/IntervalEntity";
+import {DatabaseConnection} from "../../connection.ts";
+import {MaintenanceScheduleRepository} from "../../../../application/repositories/MaintenanceScheduleRepository.ts";
+import {IntervalEntity} from "../../../../domain/entities/IntervalEntity.ts";
 
-export class MaintenanceScheduleRepositoryPg implements MaintenanceScheduleRepository {
+export class MaintenanceScheduleRepositoryPostgres implements MaintenanceScheduleRepository {
     private dbConnection: DatabaseConnection;
     private tableName: string;
 

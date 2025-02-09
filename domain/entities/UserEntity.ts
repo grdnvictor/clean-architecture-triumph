@@ -12,6 +12,7 @@ export class UserEntity {
     public static create(
         email: string,
         password: string,
+        concessionId: string,
         isAdmin: boolean = false
     ) {
         return new UserEntity(
@@ -19,6 +20,7 @@ export class UserEntity {
             email,
             password,
             isAdmin,
+            concessionId,
             new Date(),
             new Date()
         );

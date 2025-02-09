@@ -1,22 +1,29 @@
+import * as process from "node:process";
 
-import { AppointmentRepositoryInMemory } from "../../adapters/repositories/AppointmentRepositoryInMemory";
-import { MotorcycleRepositoryPostgres } from "../../adapters/repositories/MotorcycleRepositoryPostgres";
-import { AppointmentController } from "./controllers/AppointmentController";
-import { MotorcycleController } from "./controllers/MotorcycleController";
-import {AuthentificationController} from "./controllers/AuthentificationController";
-import { UserRepositoryPg } from "../../adapters/repositories/UserRepositoryPg";
+import { AppointmentRepositoryInMemory } from "../../adapters/repositories/inMemory/AppointmentRepositoryInMemory";
 import {AuthentificationUsecase} from "../../../application/usecases/AuthentificationUsecase";
 import {TokenService} from "../../services/TokenService";
 import {PasswordService} from "../../services/PasswordService";
-import * as process from "node:process";
-import {BrandRepositoryPostgres} from "../../adapters/repositories/BrandRepositoryPostgres.ts";
-import {ModelRepositoryPostgres} from "../../adapters/repositories/ModelRepositoryPostgres.ts";
-import {MotorcycleBrandController} from "./controllers/MotorcycleBrandController";
-import {MotorcycleModelController} from "./controllers/MotorcycleModelController";
-import {ClientRepositoryPostgres} from "../../adapters/repositories/ClientRepositoryPostgres.ts";
-import {ClientController} from "./controllers/ClientController.ts";
-import {ConcessionRepositoryPostgres} from "../../adapters/repositories/ConcessionRepositoryPostgres.ts";
-import {ConcessionController} from "./controllers/ConcessionController.ts";
+
+import {
+    ClientController,
+    AppointmentController,
+    MotorcycleController,
+    AuthentificationController,
+    MotorcycleBrandController,
+    MotorcycleModelController,
+    ConcessionController
+} from "./controllers/index.ts";
+
+import {
+    ConcessionRepositoryPostgres,
+    MotorcycleRepositoryPostgres,
+    UserRepositoryPostgres,
+    BrandRepositoryPostgres,
+    ModelRepositoryPostgres,
+    ClientRepositoryPostgres
+} from "../../adapters/repositories/postgresql/index.ts";
+
 
 const options = {
   port: 8000,
@@ -24,7 +31,7 @@ const options = {
 };
 
 const appointmentRepository = new AppointmentRepositoryInMemory([]);
-const userRepository = new UserRepositoryPg();
+const userRepository = new UserRepositoryPostgres();
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
@@ -56,9 +63,6 @@ const motorcycleController = new MotorcycleController(
     brandRepository,
     modelRepository
 );
-/*const scheduleRepository = new ScheduleRepositoryPg();
-const scheduleController = new ScheduleController(scheduleRepository);
-*/
 
 const motorcycleBrandController = new MotorcycleBrandController(brandRepository);
 const motorcycleModelController = new MotorcycleModelController(modelRepository);

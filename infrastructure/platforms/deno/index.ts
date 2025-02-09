@@ -98,14 +98,17 @@ const handler = async (request: Request): Promise<Response> => {
       }
     }
 
-    if (url.pathname === "/motorcycles") {
+      if (url.pathname.startsWith("/motorcycles")) {
       if (request.method === "GET") {
         response = await motorcycleController.listMotorcycles(request);
-      } else if (request.method === "POST") {
-        response = await motorcycleController.createMotorcycle(request);
-      } else {
-        response = new Response("Method not allowed", { status: 405 });
       }
+      if (request.method === "POST") {
+        response = await motorcycleController.createMotorcycle(request);
+      }
+
+        if (request.method === "DELETE") {
+            response = await motorcycleController.deleteMotorcycle(request);
+        }
     }
 
     if (url.pathname.startsWith("/clients")) {

@@ -13,28 +13,28 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Trash } from "lucide-react";
 
-export default function MotorcyclesPage() {
-    const [motorcycles, setMotorcycles] = useState([]);
+export default function ConcessionsPage() {
+    const [concessions, setConcessions] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/motorcycles")
+        fetch("http://localhost:8000/concessions")
             .then((response) => response.json())
-            .then((data) => setMotorcycles(data))
+            .then((data) => setConcessions(data))
             .catch((error) =>
-                console.error("Erreur lors de la récupération des motos :", error)
+                console.error("Erreur lors de la récupération des concessions :", error)
             );
     }, []);
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8000/motorcycles/${id}`, {
+            const response = await fetch(`http://localhost:8000/concessions/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) {
-                throw new Error("Erreur lors de la suppression du client");
+                throw new Error("Erreur lors de la suppression de la concession");
             }
-            setMotorcycles((prevMotorcycles) =>
-                prevMotorcycles.filter((motorcycle) => motorcycle.id !== id)
+            setConcessions((prevConcessions) =>
+                prevConcessions.filter((concession) => concession.id !== id)
             );
         } catch (error) {
             console.error(error);
@@ -43,40 +43,38 @@ export default function MotorcyclesPage() {
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">Liste des Motos</h1>
-
-            {/* Wrapper pour le tableau en full width avec scroll horizontal si nécessaire */}
+            <h1 className="text-3xl font-bold mb-6">Liste des Concessions</h1>
             <div className="w-full overflow-x-auto">
                 <Table className="w-full">
                     <TableHeader>
                         <TableRow>
                             <TableHead>ID</TableHead>
-                            <TableHead>VIN</TableHead>
-                            <TableHead>Model ID</TableHead>
-                            <TableHead>Concession ID</TableHead>
-                            <TableHead>Kilométrage</TableHead>
+                            <TableHead>Nom</TableHead>
+                            <TableHead>Adresse</TableHead>
+                            <TableHead>Siret</TableHead>
+                            <TableHead>Téléphone</TableHead>
                             <TableHead>Créé le</TableHead>
                             <TableHead>Mis à jour le</TableHead>
                             <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {motorcycles.map((moto) => (
-                            <TableRow key={moto.id}>
-                                <TableCell>{moto.id}</TableCell>
-                                <TableCell>{moto.vin}</TableCell>
-                                <TableCell>{moto.modelid}</TableCell>
-                                <TableCell>{moto.concessionid}</TableCell>
-                                <TableCell>{moto.currentmileage}</TableCell>
+                        {concessions.map((concession) => (
+                            <TableRow key={concession.id}>
+                                <TableCell>{concession.id}</TableCell>
+                                <TableCell>{concession.name}</TableCell>
+                                <TableCell>{concession.address}</TableCell>
+                                <TableCell>{concession.siret}</TableCell>
+                                <TableCell>{concession.phonenumber}</TableCell>
                                 <TableCell>
-                                    {new Date(moto.createdat).toLocaleDateString()}
+                                    {new Date(concession.createdat).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell>
-                                    {new Date(moto.updatedat).toLocaleDateString()}
+                                    {new Date(concession.updatedat).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell>
                                     <Trash
-                                        onClick={() => handleDelete(moto.id)}
+                                        onClick={() => handleDelete(concession.id)}
                                         className="text-red-500 w-4 h-4 cursor-pointer"
                                     />
                                 </TableCell>
@@ -85,12 +83,10 @@ export default function MotorcyclesPage() {
                     </TableBody>
                 </Table>
             </div>
-
             <div className="mt-8">
                 <Button>
-                    <Link href="/motorcycles/create">Ajouter une moto</Link>
-
-                    </Button>
+                    <Link href="/concessions/create">Ajouter une concession</Link>
+                </Button>
             </div>
         </div>
     );

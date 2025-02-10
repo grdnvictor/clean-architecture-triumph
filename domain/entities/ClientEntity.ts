@@ -8,7 +8,7 @@ export class ClientEntity {
         public readonly identifier: string,
         public readonly firstName: string,
         public readonly lastName: string,
-        private readonly phone: string,
+        public readonly phone: string,
         public readonly concessionId: string,
         public readonly createdAt: Date,
         public readonly updatedAt: Date,

@@ -46,13 +46,16 @@ export class ClientController {
     const {
       firstName,
       lastName,
-      concessionId
+      concessionId,
+      phone
     } = validation.data;
+
     const createClientUsecase = new CreateClientUsecase(this.repository);
     const result = await createClientUsecase.execute(
         firstName,
         lastName,
-        concessionId
+        concessionId,
+        phone
     );
 
     if (result instanceof Error) {

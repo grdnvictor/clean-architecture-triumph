@@ -19,11 +19,6 @@ INSERT INTO motorcycle (vin, modelId, concessionId, currentMileage, createdAt, u
     ('2HGCM82633A654321', gen_random_uuid(), gen_random_uuid(), 5000, NOW(), NOW()),
     ('3HGCM82633A789012', gen_random_uuid(), gen_random_uuid(), 8000, NOW(), NOW());
 
-INSERT INTO client_motorcycle (id, vin, model_id, client_id, currentMileage, createdAt, updatedAt) VALUES
-    (gen_random_uuid(), '1HGCM82633A004352', (SELECT id FROM model LIMIT 1 OFFSET 0), (SELECT id FROM client LIMIT 1 OFFSET 0), 10000, NOW(), NOW()),
-    (gen_random_uuid(), '2HGCM82633A004353', (SELECT id FROM model LIMIT 1 OFFSET 1), (SELECT id FROM client LIMIT 1 OFFSET 1), 15000, NOW(), NOW()),
-    (gen_random_uuid(), '3HGCM82633A004354', (SELECT id FROM model LIMIT 1 OFFSET 2), (SELECT id FROM client LIMIT 1 OFFSET 2), 20000, NOW(), NOW());
-
 INSERT INTO brand (name) VALUES
     ('Yamaha'),
     ('Honda'),
@@ -36,11 +31,16 @@ INSERT INTO brand (name) VALUES
     ('KTM'),
     ('Aprilia');
 
-
 INSERT INTO model (id, name, year, brand_id, description, maintenance_interval_km, maintenance_interval_months, created_at, updated_at) VALUES
 (gen_random_uuid(), 'YZF-R1', 2023, (SELECT id FROM brand WHERE name = 'Yamaha'), '{"maintenance": "changer les filtres"}', 10000, 12, NOW(), NOW()),
 (gen_random_uuid(), 'CBR1000RR', 2023, (SELECT id FROM brand WHERE name = 'Honda'), '{"maintenance": "vérifier les freins"}', 10000, 12, NOW(), NOW()),
 (gen_random_uuid(), 'GSX-R1000', 2023, (SELECT id FROM brand WHERE name = 'Suzuki'), '{"maintenance": "changer l huile"}', 10000, 12, NOW(), NOW());
+
+
+INSERT INTO client_motorcycle (id, vin, model_id, client_id, currentMileage, createdAt, updatedAt) VALUES
+                                                                                                       (gen_random_uuid(), '1HGCM82633A004352', (SELECT id FROM model LIMIT 1 OFFSET 0), (SELECT id FROM client LIMIT 1 OFFSET 0), 10000, NOW(), NOW()),
+                                                                                                       (gen_random_uuid(), '2HGCM82633A004353', (SELECT id FROM model LIMIT 1 OFFSET 1), (SELECT id FROM client LIMIT 1 OFFSET 1), 15000, NOW(), NOW()),
+                                                                                                       (gen_random_uuid(), '3HGCM82633A004354', (SELECT id FROM model LIMIT 1 OFFSET 2), (SELECT id FROM client LIMIT 1 OFFSET 2), 20000, NOW(), NOW());
 
 INSERT INTO part (name, reference, stock, minimumStock, createdAt, updatedAt) VALUES
     ('Brake Pad', 'BP123', 50, 10, NOW(), NOW()),

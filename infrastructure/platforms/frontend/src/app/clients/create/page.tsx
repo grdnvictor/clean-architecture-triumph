@@ -16,7 +16,8 @@ export default function CreateClientPage() {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
-        concessionId: ""
+        concessionId: "",
+        phone: ""
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -58,15 +59,23 @@ export default function CreateClientPage() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <Label htmlFor="firstName">Prénom</Label>
-                            <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} required />
+                            <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleChange}
+                                   required/>
                         </div>
                         <div>
                             <Label htmlFor="lastName">Nom</Label>
-                            <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} required />
+                            <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleChange}
+                                   required/>
+                        </div>
+                        <div>
+                            <Label htmlFor="phone">Numéro de téléphone</Label>
+                            <Input id="phone" name="phone" value={formData.phone} onChange={handleChange}
+                                   required/>
                         </div>
                         <div>
                             <Label htmlFor="concessionId">ID Concession</Label>
-                            <Input id="concessionId" name="concessionId" value={formData.concessionId} onChange={handleChange} required />
+                            <Input id="concessionId" name="concessionId" value={formData.concessionId}
+                                   onChange={handleChange} required/>
                         </div>
                         <Button type="submit" disabled={loading}>
                             {loading ? "Ajout en cours..." : "Ajouter"}

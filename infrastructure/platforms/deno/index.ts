@@ -13,7 +13,7 @@ import {
     MotorcycleBrandController,
     MotorcycleModelController,
     ConcessionController,
-    TrialController
+    TrialController,
     PartController
 } from "./controllers/index.ts";
 
@@ -24,7 +24,7 @@ import {
     BrandRepositoryPostgres,
     ModelRepositoryPostgres,
     ClientRepositoryPostgres,
-    TrialRepositoryPostgres
+    TrialRepositoryPostgres,
     PartRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
 

@@ -8,7 +8,7 @@ export class TokenService {
     }
     generateAccessToken(user: UserEntity): string {
         return jwt.sign(
-            { id: user.identifier, email: user.email, role: user.isAdmin },
+            { id: user.identifier, email: user.email, isAdmin: user.isAdmin, concessionId: user.concessionId },
             this.secret,
             { expiresIn: '1h' }
         );

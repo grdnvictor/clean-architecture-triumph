@@ -289,8 +289,7 @@ export default function ModelManagement() {
                                                 <p className="text-sm text-gray-600">
                                                     Entretien tous les: {model.maintenanceIntervalKm} km ou {model.maintenanceIntervalMonths} mois
                                                 </p>
-                                                <p className="mt-2">{model.description?.type || model.description}</p> {/* Accessing description */}
-                                            </div>
+                                                <p className="mt-2">{typeof model.description === 'string' ? model.description : JSON.stringify(model.description)}</p>                                            </div>
                                             <button
                                                 className="text-blue-600 hover:text-blue-800 transition-colors"
                                                 onClick={() => {}}

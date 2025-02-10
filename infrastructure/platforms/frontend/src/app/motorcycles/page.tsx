@@ -15,11 +15,11 @@ import { Trash } from "lucide-react";
 import {useRequireAuth} from "@/hooks/useRequireAuth";
 
 export default function MotorcyclesPage() {
-    // const authChecked = useRequireAuth();
-    //
-    // if (!authChecked) {
-    //     return null;
-    // }
+    const authChecked = useRequireAuth();
+
+    if (!authChecked) {
+        return null;
+    }
 
     const [motorcycles, setMotorcycles] = useState([]);
 

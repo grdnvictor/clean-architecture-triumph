@@ -1,4 +1,4 @@
-import { Home, Store, User, Bike, ScanFace, Drill, Calendar, Wrench } from "lucide-react"
+import { Home, Store, User, Bike, ScanFace, Drill, Calendar, Wrench, LogOut } from "lucide-react"
 
 import {
     Sidebar,
@@ -52,6 +52,11 @@ const items = [
         url: "/maintenance",
         icon: Wrench,
     },
+    {
+        title: "Déconnexion",
+        url: "/logout",
+        icon: LogOut,
+    }
 
 ]
 

@@ -38,12 +38,10 @@ export default function Login() {
 
             const response = await signIn(validatedData.email, validatedData.password);
 
-            if (response.ok) {
+            if (response) {
                 localStorage.setItem("loggedIn", "true");
                 console.log("Signed in!");
                 router.push("/");
-            } else {
-                throw new Error("Failed to sign in");
             }
         } catch (error) {
             if (error instanceof ZodError) {

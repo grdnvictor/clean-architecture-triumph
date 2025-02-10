@@ -12,7 +12,7 @@ export default function Home() {
                 }}
             >
                 <h1 className={"text-[32px] text-white font-semibold text-center"}>INTERFACE DE GESTION TRIUMPH</h1>
-                <o className={"text-[24px] text-white text-center"}>Triumph et vous, ensemble au service de vos clients</o>
+                <p className={"text-[24px] text-white text-center"}>Triumph et vous, ensemble au service de vos clients</p>
                 <div className="relative z-50 pointer-events-auto flex items-center justify-center gap-6">
                     <Button className="p-6 rounded-none bg-white text-black hover:text-white cursor-pointer">
                         Clients

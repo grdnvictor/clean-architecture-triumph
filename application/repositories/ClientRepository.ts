@@ -12,6 +12,7 @@ export interface ClientRepository {
         offset?: number;
     }): Promise<ClientEntity[]>;
     findOneById(id: string): Promise<ClientEntity | null>;
+    findOneByPhone(phone: string): Promise<ClientEntity | null>;
     update(id: string, updatedData: Partial<ClientEntity>): Promise<void>;
     delete(id: string): Promise<void>;
 }

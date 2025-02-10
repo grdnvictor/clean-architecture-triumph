@@ -41,6 +41,15 @@ export class ClientRepositoryPostgres implements ClientRepository {
     );
     return result.rows.length > 0 ? result.rows[0] : null;
   }
+  public async findOneByPhone(phone: string): Promise<ClientEntity | null> {
+    const result = await this.client.queryObject<ClientEntity>(
+        "SELECT * FROM client WHERE phone = $PHONE",
+        {
+            PHONE: phone
+        }
+    );
+    return result.rows.length > 0 ? result.rows[0] : null;
+  }
 
   public async update(id: string, updatedData: Partial<ClientEntity>): Promise<void> {
     await this.client.queryArray(

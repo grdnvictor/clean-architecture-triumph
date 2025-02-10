@@ -27,6 +27,11 @@ import {
     TrialRepositoryPostgres,
     PartRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
+import {ClientMotorcycleController} from "./controllers/ClientMotorcycleController.ts";
+import {
+    ClientMotorcycleRepositoryPostgres
+} from "../../adapters/repositories/postgresql/ClientMotorcycleRepositoryPostgres.ts";
+import {AppointmentRepositoryPostgres} from "../../adapters/repositories/postgresql/AppointmentRepositoryPostgres.ts";
 
 
 const options = {
@@ -34,11 +39,12 @@ const options = {
   host: "0.0.0.0",
 };
 
-const appointmentRepository = new AppointmentRepositoryInMemory([]);
+const appointmentRepository = new AppointmentRepositoryPostgres();
 const userRepository = new UserRepositoryPostgres();
 const motorcycleRepositoryPostgres = new MotorcycleRepositoryPostgres();
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
+const clientMotorcycleRepositoryPostgres = new ClientMotorcycleRepositoryPostgres();
 const partRepositoryPostgres = new PartRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
 const partController = new PartController(partRepositoryPostgres);
@@ -59,8 +65,9 @@ const brandRepository = new BrandRepositoryPostgres();
 const modelRepository = new ModelRepositoryPostgres();
 
 const appointmentController = new AppointmentController(
-  appointmentRepository,
-  motorcycleRepositoryPostgres,
+    appointmentRepository,
+    clientMotorcycleRepositoryPostgres,
+    clientRepositoryPostgres
 );
 
 const authentificationUsecase = new AuthentificationUsecase(
@@ -76,6 +83,8 @@ const motorcycleController = new MotorcycleController(
     brandRepository,
     modelRepository
 );
+
+const clientMotorcycleController = new ClientMotorcycleController(clientMotorcycleRepositoryPostgres);
 
 const motorcycleBrandController = new MotorcycleBrandController(brandRepository);
 const motorcycleModelController = new MotorcycleModelController(modelRepository);
@@ -99,7 +108,6 @@ const handler = async (request: Request): Promise<Response> => {
       });
     }
     let response: Response;
-
 
     if (url.pathname === "/appointments") {
       if (request.method === "GET") {
@@ -220,11 +228,32 @@ const handler = async (request: Request): Promise<Response> => {
       }
 
     if (url.pathname === "/motorcycle-models") {
+          if (request.method === "GET") {
+              response = await motorcycleModelController.listMotorcyclesModels(request);
+          }
+          if (request.method === "POST") {
+              response = await motorcycleModelController.createMotorcycleModel(request);
+          }
+      }
+    if (url.pathname === "/client/search") {
+        if (request.method === "POST") {
+            response =  await clientController.getClientByPhone(request);
+        }
+    }
+    if (url.pathname.startsWith("/client/motorcycles/")) {
         if (request.method === "GET") {
-            response = await motorcycleModelController.listMotorcyclesModels(request);
+            response =  await clientMotorcycleController.getClientMotorcycles(request);
+        }
+    }
+    if (url.pathname.startsWith("/appointments")) {
+        if (request.method === "GET") {
+            response = await appointmentController.listAppointments();
         }
         if (request.method === "POST") {
-            response = await motorcycleModelController.createMotorcycleModel(request);
+            response = await appointmentController.createAppointment(request);
+        }
+        if (request.method === "DELETE") {
+            response = await appointmentController.deleteAppointment(request);
         }
     }
 

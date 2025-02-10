@@ -1,6 +1,8 @@
 import { AppointmentDatePastError } from "../errors/AppointmentDatePastError.ts";
+import {AppointmentEntity} from "../entities/AppointmentEntity.ts";
+import {AppointmentRepository} from "../../application/repositories/AppointmentRepository.ts";
 
-export class AppointmentDate {
+export class AppointmentDate implements AppointmentRepository{
   private constructor(public readonly value: Date) {}
 
   public static from(date: Date) {

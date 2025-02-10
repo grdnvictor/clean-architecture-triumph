@@ -14,6 +14,9 @@ import {
   UpdateClientUsecase,
   ListClientsUsecase
 } from "../../../../application/usecases/client/index.ts";
+import {GetClientByPhoneUsecase} from "../../../../application/usecases/client/GetClientByPhoneUsecase.ts";
+import {authentificationRequestSchema} from "../schemas/AuthentificationRequestSchema.ts";
+import {createPhoneRequestSchema} from "../schemas/createPhoneRequestSchema.ts";
 
 export class ClientController {
   constructor(private readonly repository: ClientRepository) {}
@@ -77,6 +80,23 @@ export class ClientController {
 
     return new Response(JSON.stringify(client), { headers: { "Content-Type": "application/json" } });
   }
+
+  public async getClientByPhone(request: Request): Promise<Response> {
+    const body = await request.json();
+    const validation = createPhoneRequestSchema.safeParse(body);
+    if (!validation.success) {
+      return new Response("Malformed request", {
+        status: 400,
+      });
+    }
+    const {phoneNumber} = validation.data;
+    const getClientByPhoneUsecase = new GetClientByPhoneUsecase(this.repository);
+    const client = await getClientByPhoneUsecase.execute(phoneNumber);
+    if (!client) return new Response("Client not found", { status: 404 });
+
+    return new Response(JSON.stringify(client), { headers: { "Content-Type": "application/json" } });
+  }
+
 
   public async updateClient(request: Request): Promise<Response> {
     const url = new URL(request.url);

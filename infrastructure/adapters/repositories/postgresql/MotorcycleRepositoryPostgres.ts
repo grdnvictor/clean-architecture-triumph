@@ -1,6 +1,6 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository.ts";
-import type { MotorcycleEntity } from "../../../../domain/entities/MotorcycleEntity.ts";
+import  { MotorcycleEntity } from "../../../../domain/entities/MotorcycleEntity.ts";
 import { DatabaseConnection } from "../../connection.ts";
 
 export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
@@ -32,12 +32,26 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
   }
 
   public async findOneById(id: string): Promise<MotorcycleEntity | null> {
+      const result = await this.client.queryObject<MotorcycleEntity>(
+        "SELECT * FROM motorcycle WHERE id = $ID",
+          {
+              ID:id
+          }
+    );
+      console.log(result.rows);
+      return result.rows.length > 0 ? result.rows[0] : null;
+  }
+
+  public async findOneByClientId(id: string): Promise<MotorcycleEntity | null> {
     const result = await this.client.queryObject<MotorcycleEntity>(
-        "SELECT * FROM motorcycle WHERE id = $1",
-        id
+        "SELECT * FROM motorcycle WHERE client_id = $ID",
+        {
+            ID:id
+        }
     );
     return result.rows.length > 0 ? result.rows[0] : null;
   }
+
 
   public async update(id: string, updatedData: Partial<MotorcycleEntity>): Promise<void> {
     await this.client.queryArray(

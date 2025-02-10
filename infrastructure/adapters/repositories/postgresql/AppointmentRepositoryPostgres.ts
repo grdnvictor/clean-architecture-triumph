@@ -12,8 +12,6 @@ export class AppointmentRepositoryPostgres implements AppointmentRepository {
     this.tableName = "appointment";
   }
   public async save(appointment: AppointmentEntity): Promise<void> {
-    console.log("Appointement",appointment);
-    console.log("motoID",appointment.motorcycle.id)
     return await this.client.queryObject<AppointmentEntity>(
         `INSERT INTO ${this.tableName} (date, client_id, motorcycle_id) 
         VALUES ($DATE, $CLIENT_ID, $MOTORCYCLE_ID)`,
@@ -23,8 +21,16 @@ export class AppointmentRepositoryPostgres implements AppointmentRepository {
           MOTORCYCLE_ID: appointment.motorcycle.id,
         }
     );
-
   }
+  public async delete(id:string): Promise<void> {
+    return await this.client.queryObject<AppointmentEntity>(
+        `DELETE FROM ${this.tableName} WHERE id = $ID`,
+        {
+          ID: id,
+        }
+    );
+  }
+
 
   public all(): Promise<AppointmentEntity[]> {
     return Promise.resolve(this.appointments);

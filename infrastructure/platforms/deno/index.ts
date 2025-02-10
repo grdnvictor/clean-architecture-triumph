@@ -192,12 +192,15 @@ const handler = async (request: Request): Promise<Response> => {
             response =  await clientMotorcycleController.getClientMotorcycles(request);
         }
     }
-    if (url.pathname === "/appointments") {
+    if (url.pathname.startsWith("/appointments")) {
         if (request.method === "GET") {
             response = await appointmentController.listAppointments();
         }
         if (request.method === "POST") {
             response = await appointmentController.createAppointment(request);
+        }
+        if (request.method === "DELETE") {
+            response = await appointmentController.deleteAppointment(request);
         }
     }
 

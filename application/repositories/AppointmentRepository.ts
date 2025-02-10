@@ -2,5 +2,6 @@ import type { AppointmentEntity } from "../../domain/entities/AppointmentEntity.
 
 export interface AppointmentRepository {
   save(appointment: AppointmentEntity): Promise<void>;
+  delete(id:string): Promise<void>;
   all(): Promise<AppointmentEntity[]>;
 }

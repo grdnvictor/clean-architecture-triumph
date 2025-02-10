@@ -81,7 +81,7 @@ export class ClientController {
     return new Response(JSON.stringify(client), { headers: { "Content-Type": "application/json" } });
   }
 
-  public async getClientByPhone(request: Request): Promise<Response> {
+  public async  getClientByPhone(request: Request): Promise<Response> {
     const body = await request.json();
     const validation = createPhoneRequestSchema.safeParse(body);
     if (!validation.success) {

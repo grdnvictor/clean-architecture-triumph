@@ -48,8 +48,8 @@ const items = [
         icon: Calendar,
     },
     {
-        title: "Maintenance",
-        url: "/maintenance",
+        title: "Collections",
+        url: "/collections",
         icon: Wrench,
     },
 

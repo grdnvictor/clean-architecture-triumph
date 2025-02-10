@@ -3,6 +3,7 @@ import type { ClientEntity } from "../../domain/entities/ClientEntity.ts";
 export interface ClientRepository {
     save(client: ClientEntity ): Promise<void>;
     all(): Promise<ClientEntity[]>;
+    existsInConcession(id: string, concessionId: string): Promise<boolean>;
     findByOption(options: {
         where?: Record<string, any>;
         select?: string[];

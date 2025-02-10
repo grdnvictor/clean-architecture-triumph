@@ -1,5 +1,5 @@
-import { ClientRepository } from "../../repositories/ClientRepository.ts";
-import { ClientEntity } from "../../../domain/entities/ClientEntity.ts";
+import { ClientRepository } from "../../repositories/ClientRepository";
+import { ClientEntity } from "../../../domain/entities/ClientEntity";
 
 export class GetClientByIdUsecase {
     constructor(private readonly clientRepository: ClientRepository) {}

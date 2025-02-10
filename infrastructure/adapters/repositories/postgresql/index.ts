@@ -6,3 +6,5 @@ export {ModelRepositoryPostgres} from "./ModelRepositoryPostgres.ts";
 export {MotorcycleRepositoryPostgres} from "./MotorcycleRepositoryPostgres.ts";
 export {ScheduleRepositoryPostgres} from "./ScheduleRepositoryPostgres.ts";
 export {UserRepositoryPostgres} from "./UserRepositoryPostgres.ts";
+export {TrialRepositoryPostgres} from "./TrialRepositoryPostgres.ts";
+export {PartRepositoryPostgres} from "./PartRepositoryPostgres";

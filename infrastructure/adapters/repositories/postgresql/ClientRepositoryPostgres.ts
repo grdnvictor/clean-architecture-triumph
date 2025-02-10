@@ -1,8 +1,8 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import type { MotorcycleEntity } from "../../../../domain/entities/MotorcycleEntity.ts";
 import { DatabaseConnection } from "../../connection.ts";
-import {ClientRepository} from "../../../../application/repositories/ClientRepository.ts";
-import {ClientEntity} from "../../../../domain/entities/ClientEntity.ts";
+import {ClientRepository} from "../../../../application/repositories/ClientRepository";
+import {ClientEntity} from "../../../../domain/entities/ClientEntity";
 
 export class ClientRepositoryPostgres implements ClientRepository {
   private client: Client;
@@ -66,6 +66,17 @@ export class ClientRepositoryPostgres implements ClientRepository {
     await this.client.queryArray("DELETE FROM client WHERE id = $CLIENT", {
         CLIENT: id
     });
+  }
+
+  public async existsInConcession(id: string, concessionId: string): Promise<boolean> {
+    const result = await this.client.queryObject<ClientEntity>(
+        "SELECT * FROM client WHERE id = $ID AND concessionId = $CONCESSIONID",
+        {
+            ID: id,
+            CONCESSIONID: concessionId
+        }
+    );
+    return result.rows.length > 0;
   }
 
   public async findByOption(options: { where?: Record<string, any>; select?: string[]; orderBy?: string; limit?: number; offset?: number; }): Promise<ClientEntity[]> {

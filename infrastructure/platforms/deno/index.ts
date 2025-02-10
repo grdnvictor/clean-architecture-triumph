@@ -12,7 +12,9 @@ import {
     AuthentificationController,
     MotorcycleBrandController,
     MotorcycleModelController,
-    ConcessionController
+    ConcessionController,
+    TrialController,
+    PartController
 } from "./controllers/index.ts";
 
 import {
@@ -21,7 +23,9 @@ import {
     UserRepositoryPostgres,
     BrandRepositoryPostgres,
     ModelRepositoryPostgres,
-    ClientRepositoryPostgres
+    ClientRepositoryPostgres,
+    TrialRepositoryPostgres,
+    PartRepositoryPostgres
 } from "../../adapters/repositories/postgresql/index.ts";
 import {ClientMotorcycleController} from "./controllers/ClientMotorcycleController.ts";
 import {
@@ -37,15 +41,23 @@ const options = {
 
 const appointmentRepository = new AppointmentRepositoryPostgres();
 const userRepository = new UserRepositoryPostgres();
-const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
+const motorcycleRepositoryPostgres = new MotorcycleRepositoryPostgres();
 
 const clientRepositoryPostgres = new ClientRepositoryPostgres();
 const clientMotorcycleRepositoryPostgres = new ClientMotorcycleRepositoryPostgres();
+const partRepositoryPostgres = new PartRepositoryPostgres();
 const clientController = new ClientController(clientRepositoryPostgres);
-
+const partController = new PartController(partRepositoryPostgres);
 const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
 const concessionController = new ConcessionController(concessionRepositoryPostgres);
 
+const trialRepositoryPostgres = new TrialRepositoryPostgres();
+const trialController = new TrialController(
+    trialRepositoryPostgres,
+    clientRepositoryPostgres,
+    concessionRepositoryPostgres,
+    motorcycleRepositoryPostgres
+);
 
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
@@ -67,7 +79,7 @@ const authentificationUsecase = new AuthentificationUsecase(
 const authentificationController = new AuthentificationController(authentificationUsecase);
 
 const motorcycleController = new MotorcycleController(
-    motorcycleRepository,
+    motorcycleRepositoryPostgres,
     brandRepository,
     modelRepository
 );
@@ -107,17 +119,35 @@ const handler = async (request: Request): Promise<Response> => {
       }
     }
 
-      if (url.pathname.startsWith("/motorcycles")) {
-      if (request.method === "GET") {
-        response = await motorcycleController.listMotorcycles(request);
-      }
-      if (request.method === "POST") {
-        response = await motorcycleController.createMotorcycle(request);
+      if (url.pathname.startsWith("/parts")) {
+          const hasParameter = url.pathname.split("/").length > 2;
+          if (request.method === "GET") {
+              response = hasParameter
+                  ? await partController.getPartById(request)
+                  : await partController.listParts(request);
+          }
+
+          if (request.method === "POST") {
+              response = await partController.createPart(request);
+          }
+
+          if (request.method === "PUT") {
+              response = await partController.updatePart(request);
+          }
+
+          if (request.method === "DELETE") {
+              response = await partController.deletePart(request);
+          }
       }
 
-        if (request.method === "DELETE") {
-            response = await motorcycleController.deleteMotorcycle(request);
-        }
+    if (url.pathname === "/motorcycles") {
+      if (request.method === "GET") {
+        response = await motorcycleController.listMotorcycles(request);
+      } else if (request.method === "POST") {
+        response = await motorcycleController.createMotorcycle(request);
+      } else {
+        response = new Response("Method not allowed", { status: 405 });
+      }
     }
 
     if (url.pathname.startsWith("/clients")) {
@@ -160,6 +190,29 @@ const handler = async (request: Request): Promise<Response> => {
         if (request.method === "DELETE") {
           response = await concessionController.deleteConcession(request);
         }
+    }
+
+    if (url.pathname.startsWith("/trials")) {
+          const pathParts = url.pathname.split("/");
+          const hasConcessionAndTrialId = pathParts.length > 3;
+
+          if (request.method === "GET") {
+              response = hasConcessionAndTrialId
+                  ? await trialController.getTrialById(request)
+                  : await trialController.listTrials(request);
+          }
+
+          if (request.method === "POST") {
+              response = await trialController.createTrial(request);
+          }
+
+          if (request.method === "PUT") {
+              response = await trialController.updateTrial(request);
+          }
+
+          if (request.method === "DELETE") {
+              response = await trialController.deleteTrial(request);
+          }
     }
 
     if (url.pathname === "/auth/signin") {

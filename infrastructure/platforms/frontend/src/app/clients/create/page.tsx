@@ -8,6 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CreateClientPage() {
+    // const authChecked = useRequireAuth();
+    //
+    // if (!authChecked) {
+    //     return null;
+    // }
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",

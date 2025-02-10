@@ -12,8 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Trash } from "lucide-react";
+import {useRequireAuth} from "@/hooks/useRequireAuth";
 
 export default function ConcessionsPage() {
+    // const authChecked = useRequireAuth();
+    //
+    // if (!authChecked) {
+    //     return null;
+    // }
     const [concessions, setConcessions] = useState([]);
 
     useEffect(() => {

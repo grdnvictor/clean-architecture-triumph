@@ -113,3 +113,17 @@ CREATE TABLE maintenances (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE trial (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    clientId UUID NOT NULL,
+    motorcycleId UUID NOT NULL,
+    concessionId UUID NOT NULL,
+    startDate TIMESTAMP NOT NULL,
+    endDate TIMESTAMP NOT NULL,
+    mileageStart INTEGER NOT NULL,
+    mileageEnd INTEGER,
+    feedback TEXT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

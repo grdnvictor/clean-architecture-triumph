@@ -2,6 +2,7 @@ import {Firstname} from "../types/Firstname.ts";
 import {Lastname} from "../types/Lastname.ts";
 import {PhoneNumber} from "../types/PhoneNumber.ts";
 
+
 export class ClientEntity {
     private constructor(
         public readonly identifier: string,

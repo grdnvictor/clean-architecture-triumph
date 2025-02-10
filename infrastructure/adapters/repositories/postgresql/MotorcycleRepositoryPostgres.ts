@@ -32,17 +32,22 @@ export class MotorcycleRepositoryPostgres implements MotorcycleRepository {
   }
 
   public async findOneById(id: string): Promise<MotorcycleEntity | null> {
-    const result = await this.client.queryObject<MotorcycleEntity>(
-        "SELECT * FROM motorcycle WHERE id = $1",
-        id
+      const result = await this.client.queryObject<MotorcycleEntity>(
+        "SELECT * FROM motorcycle WHERE id = $ID",
+          {
+              ID:id
+          }
     );
-    return result.rows.length > 0 ? result.rows[0] : null;
+      console.log(result.rows);
+      return result.rows.length > 0 ? result.rows[0] : null;
   }
 
   public async findOneByClientId(id: string): Promise<MotorcycleEntity | null> {
     const result = await this.client.queryObject<MotorcycleEntity>(
-        "SELECT * FROM motorcycle WHERE client_id = $1",
-        id
+        "SELECT * FROM motorcycle WHERE client_id = $ID",
+        {
+            ID:id
+        }
     );
     return result.rows.length > 0 ? result.rows[0] : null;
   }

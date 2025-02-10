@@ -18,4 +18,4 @@ ALTER TABLE client_motorcycle
             REFERENCES client(id) ON DELETE CASCADE,
     ADD CONSTRAINT fk_clientMoto_motorcycle
         FOREIGN KEY (motorcycle_id)
-            REFERENCES motorcycle(id) ON DELETE CASCADE;
+            REFERENCES client_motorcycle(id) ON DELETE CASCADE;

@@ -27,6 +27,7 @@ import {ClientMotorcycleController} from "./controllers/ClientMotorcycleControll
 import {
     ClientMotorcycleRepositoryPostgres
 } from "../../adapters/repositories/postgresql/ClientMotorcycleRepositoryPostgres.ts";
+import {AppointmentRepositoryPostgres} from "../../adapters/repositories/postgresql/AppointmentRepositoryPostgres.ts";
 
 
 const options = {
@@ -34,7 +35,7 @@ const options = {
   host: "0.0.0.0",
 };
 
-const appointmentRepository = new AppointmentRepositoryInMemory([]);
+const appointmentRepository = new AppointmentRepositoryPostgres();
 const userRepository = new UserRepositoryPostgres();
 const motorcycleRepository = new MotorcycleRepositoryPostgres([]);
 
@@ -45,14 +46,16 @@ const clientController = new ClientController(clientRepositoryPostgres);
 const concessionRepositoryPostgres = new ConcessionRepositoryPostgres();
 const concessionController = new ConcessionController(concessionRepositoryPostgres);
 
+
 const passwordService = new PasswordService();
 const tokenService = new TokenService(process.env.JWT_SECRET);
 const brandRepository = new BrandRepositoryPostgres();
 const modelRepository = new ModelRepositoryPostgres();
 
 const appointmentController = new AppointmentController(
-  appointmentRepository,
-  motorcycleRepository,
+    appointmentRepository,
+    clientMotorcycleRepositoryPostgres,
+    clientRepositoryPostgres
 );
 
 const authentificationUsecase = new AuthentificationUsecase(
@@ -188,16 +191,14 @@ const handler = async (request: Request): Promise<Response> => {
         if (request.method === "GET") {
             response =  await clientMotorcycleController.getClientMotorcycles(request);
         }
-
     }
-    if (url.pathname === "/maintenance-planning") {
+    if (url.pathname === "/appointments") {
         if (request.method === "GET") {
             response = await appointmentController.listAppointments();
         }
         if (request.method === "POST") {
             response = await appointmentController.createAppointment(request);
         }
-
     }
 
     if (!response) {

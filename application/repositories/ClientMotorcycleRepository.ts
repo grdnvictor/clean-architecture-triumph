@@ -2,4 +2,5 @@ import type {ClientMotorcycleEntity} from "../../domain/entities/ClientMotorcycl
 
 export interface ClientMotorcycleRepository {
     findOneByClientId(id: string): Promise<ClientMotorcycleEntity | null>;
+    findOneById(id: string): Promise<ClientMotorcycleEntity | null>;
 }

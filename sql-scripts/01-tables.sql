@@ -42,7 +42,6 @@ CREATE TABLE client_motorcycle (
     vin VARCHAR(255) NOT NULL,
     model_id  UUID NOT NULL,
     client_id UUID NOT NULL,
-    motorcycle_id UUID NOT NULL,
     currentMileage INTEGER DEFAULT 0,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -61,6 +60,15 @@ CREATE TABLE model (
     description JSONB NOT NULL,
     maintenance_interval_km INT NOT NULL,
     maintenance_interval_months INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE appointment (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    date TIMESTAMP NOT NULL,
+    client_id UUID NOT NULL REFERENCES client(id),
+    motorcycle_id UUID NOT NULL REFERENCES client_motorcycle(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,8 +1,6 @@
 import {ModelRepository} from "../../../../application/repositories/ModelRepository";
 import {ListMotorcycleModelByBrandUsecase} from "../../../../application/usecases/ListMotorcycleModelByBrandUsecase";
 import {ListMotorcycleModelUsecase} from "../../../../application/usecases/ListMotorcycleModelUsecase";
-import {CreateAppointmentUsecase} from "../../../../application/usecases/CreateAppointmentUsecase.ts";
-import {createAppointmentRequestSchema} from "../schemas/createAppointmentRequestSchema.ts";
 import {exhaustive} from "npm:exhaustive@1.1.2";
 import {CreateMotorcycleModelUsecase} from "../../../../application/usecases/model/CreateMotorcycleModelUsecase.ts";
 import {createMotorcycleModelRequestSchema} from "../schemas/createMotorcycleModelRequestSchema.ts";
@@ -15,7 +13,6 @@ export class MotorcycleModelController {
     public async listMotorcycleByModels(_: Request, brandId:number): Promise<Response> {
         const listMotorcyclesUsecase = new ListMotorcycleModelByBrandUsecase(this.modelRepository);
         const models = await listMotorcyclesUsecase.execute(brandId);
-        console.log(models);
         return new Response(JSON.stringify(models), {
             headers: {
                 "Content-Type": "application/json",

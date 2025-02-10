@@ -1,14 +1,17 @@
 import type { AppointmentRepository } from "../../../../application/repositories/AppointmentRepository.ts";
 import type { MotorcycleRepository } from "../../../../application/repositories/MotorcycleRepository.ts";
-import { CreateAppointmentUsecase } from "../../../../application/usecases/CreateAppointmentUsecase.ts";
 import { ListAppointmentsUsecase } from "../../../../application/usecases/appointment/ListAppointmentsUsecase.ts";
 import { exhaustive } from "npm:exhaustive";
 import { createAppointmentRequestSchema } from "../schemas/createAppointmentRequestSchema.ts";
+import {CreateAppointmentUsecase} from "../../../../application/usecases/appointment/CreateAppointmentUsecase.ts";
+import {ClientRepository} from "../../../../application/repositories/ClientRepository.ts";
+import {ClientMotorcycleRepository} from "../../../../application/repositories/ClientMotorcycleRepository.ts";
 
 export class AppointmentController {
   public constructor(
     private readonly appointmentRepository: AppointmentRepository,
-    private readonly motorcycleRepository: MotorcycleRepository,
+    private readonly clientMotorcycleRepository: ClientMotorcycleRepository,
+    private readonly clientRepository: ClientRepository,
   ) {}
 
   public async listAppointments(): Promise<Response> {
@@ -27,15 +30,8 @@ export class AppointmentController {
   }
 
   public async createAppointment(request: Request): Promise<Response> {
-    const createAppointmentUsecase = new CreateAppointmentUsecase(
-      this.appointmentRepository,
-      this.motorcycleRepository,
-    );
-
     const body = await request.json();
-
     const validation = createAppointmentRequestSchema.safeParse(body);
-
     if (!validation.success) {
       return new Response("Malformed request", {
         status: 400,
@@ -43,6 +39,11 @@ export class AppointmentController {
     }
 
     const { date, clientId ,motorcycleId } = validation.data;
+    const createAppointmentUsecase = new CreateAppointmentUsecase(
+        this.appointmentRepository,
+        this.clientMotorcycleRepository,
+        this.clientRepository,
+    );
 
     const error = await createAppointmentUsecase.execute(date, clientId, motorcycleId);
 
@@ -55,6 +56,7 @@ export class AppointmentController {
     return exhaustive(error.name, {
       AppointmentDatePastError: () => new Response("AppointmentDatePastError", { status: 400 }),
       MotorcycleNotFoundError: () => new Response("MotorcycleNotFoundError", { status: 400 }),
+      UserNotFoundError: () => new Response("UserNotFoundError", { status: 400 }),
     });
   }
 }
